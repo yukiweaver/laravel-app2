@@ -15,4 +15,5 @@
 //     return view('welcome');
 // });
 
-Route::resource('book', 'BookController');
+// Route::resource('book', 'BookController');
+Route::get('/', 'SiteTopController@top');
