@@ -89,6 +89,14 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+
+        'user-register' => [
+          'driver' => 'daily',
+          'level' => 'debug',
+          'path' => storage_path('logs/laravel.log'),
+          'days' => 90,
+        ],
+
     ],
 
 ];
