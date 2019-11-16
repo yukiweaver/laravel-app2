@@ -16,4 +16,8 @@
 // });
 
 // Route::resource('book', 'BookController');
-Route::get('/', 'SiteTopController@top');
+// Route::get('/', 'SiteTopController@top');
+Auth::routes();
+
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
