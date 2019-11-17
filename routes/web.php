@@ -15,9 +15,12 @@
 //     return view('welcome');
 // });
 
-// Route::resource('book', 'BookController');
+Route::resource('book', 'BookController');
 // Route::get('/', 'SiteTopController@top');
 Auth::routes();
 
 Route::get('/', 'Auth\LoginController@showLoginForm');
 Route::get('/home', 'HomeController@index')->name('home'); // 名前path route('home')
+Route::get('/edit', 'UserController@edit')->name('edit');
+Route::get('/show', 'UserController@show')->name('show');
+Route::post('/update/{id}', 'UserController@update')->name('update');
