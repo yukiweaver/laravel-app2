@@ -19,5 +19,5 @@
 // Route::get('/', 'SiteTopController@top');
 Auth::routes();
 
-Route::get('/', 'HomeController@index')->name('home');
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'Auth\LoginController@showLoginForm');
+Route::get('/home', 'HomeController@index')->name('home'); // 名前path route('home')
