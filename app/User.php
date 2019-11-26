@@ -11,6 +11,14 @@ class User extends Authenticatable
     use Notifiable;
 
     /**
+     * ユーザーの勤怠データを取得
+     */
+    public function attendances()
+    {
+      return $this->hasMany('App\Attendance');
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

@@ -7,6 +7,8 @@ use App\HTTP\Requests\UserRequest;
 use App\Http\Controllers\Controller;
 use App\User;
 use Carbon\Carbon;
+use App\Attendance;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -16,31 +18,43 @@ class UserController extends Controller
     $sessLogin = session()->get('_login');
     $user_id = $sessLogin['user_id'];
     $user = User::find($user_id);
+    // $user = auth()->user();
     // $toDay = Carbon::today();
-    // $firstDay = $toDay->firstOfMonth();
-    // $lastDay = $toDay->lastOfMonth();
-    // $date = [];
-    // for ($i=0; true; $i++) {
-    //   $day = $firstDay->addDays($i);
-    //   if ($day > $lastDay) {
-    //     break;
-    //   }
-    //   // array_push($date, $day);
-    // }
-    // $firstOfMonth = $toDay->firstOfMonth();
-    $firstOfMonth = Carbon::now()->firstOfMonth();
-    $endOfMonth = $firstOfMonth->copy()->endOfMonth();
+    $firstDay = Carbon::now()->firstOfMonth();
+    $lastDay = $firstDay->copy()->endOfMonth();
 
+    $dbParams = [];
     for ($i = 0; true; $i++) {
-        $date = $firstOfMonth->addDays($i);
-        if ($date > $endOfMonth) {
+        $day = $firstDay->addDays($i);
+        $firstDay = Carbon::now()->firstOfMonth(); // 月初に戻す
+        // テーブルに値が存在しないか確認
+        if (!DB::table('attendances')->where('attendance_day', $day)->where('user_id', $user_id)->exists()) {
+          $data = [
+            'user_id' => $user_id,
+            'attendance_day' => $day,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+          ];
+        }
+        if ($day > $lastDay) {
             break;
         }
-        echo $date->format('Y-m-d') . PHP_EOL; //2018-08-01, 2018-08-02, ･･･, 2018-08-30, 2018-8-31
+        if (!empty($data)) {
+          array_push($dbParams, $data);
+        }
     }
+    if (!empty($dbParams)) {
+      DB::transaction(function () use ($dbParams) {
+        DB::table('attendances')->insert($dbParams);
+      });
+    }
+
+    $date = Attendance::getOneMonthDays($firstDay, $lastDay);
     
-    
-    $viewParams = ['user' => $user];
+    $viewParams = [
+      'user' => $user,
+      'date' => $date,
+    ];
     return view('user.show', $viewParams);
   }
 
