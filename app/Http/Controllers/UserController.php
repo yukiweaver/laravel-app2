@@ -2,32 +2,39 @@
 
 namespace App\Http\Controllers;
 
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use App\HTTP\Requests\UserRequest;
 use App\Http\Controllers\Controller;
 use App\User;
 use Carbon\Carbon;
 use App\Attendance;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
 
-  public function show()
+  public function show(Request $request)
   {
     $sessLogin = session()->get('_login');
     $user_id = $sessLogin['user_id'];
     $user = User::find($user_id);
-    // $user = auth()->user();
-    // $toDay = Carbon::today();
-    $firstDay = Carbon::now()->firstOfMonth();
-    $lastDay = $firstDay->copy()->endOfMonth();
+    
+    if (empty($request->input('current_day'))) {
+      $currentDay = Carbon::now();
+    } else {
+      $currentDay = Carbon::parse($request->input('current_day'));
+    }
+    $firstDay = $currentDay->copy()->firstOfMonth(); // 月初
+    $lastDay = $firstDay->copy()->endOfMonth(); // 月末
+    $lastMonth = $currentDay->copy()->subMonthNoOverflow()->format('Y-m-d'); // １ヶ月前の日付
+    $nextMonth = $currentDay->copy()->addMonthNoOverflow()->format('Y-m-d'); // １ヶ月後の日付
     $week = ['日', '月', '火', '水', '木', '金', '土'];
 
     $dbParams = [];
     for ($i = 0; true; $i++) {
         $day = $firstDay->addDays($i);
-        $firstDay = Carbon::now()->firstOfMonth(); // 月初に戻す
+        $firstDay = $currentDay->copy()->firstOfMonth(); // 月初に戻す
         // テーブルに値が存在しないか確認
         if (!DB::table('attendances')->where('attendance_day', $day)->where('user_id', $user_id)->exists()) {
           $data = [
@@ -60,6 +67,8 @@ class UserController extends Controller
       'user' => $user,
       'date' => $date,
       'week' => $week,
+      'lastMonth' => $lastMonth,
+      'nextMonth' => $nextMonth,
     ];
     return view('user.show', $viewParams);
   }

@@ -15,7 +15,11 @@
                     <table class="table table-bordered table-striped table-condensed">
                       <thead>
                         <tr>
-                          <th colspan="1">←時間管理表→</th>
+                          <th colspan="1">
+                          <a href="/show?current_day={{$lastMonth}}" class="btn-sm btn-primary">←</a>
+                            &emsp;時間管理表&emsp;
+                          <a href="/show?current_day={{$nextMonth}}" class="btn-sm btn-primary">→</a>
+                          </th>
                           <th>
                             指定勤務開始時間
                             指定勤務終了時間
@@ -61,13 +65,21 @@
                       <tbody>
                         @foreach ($date as $d)
                         <tr>
-                        <td>{{$d->attendance_day}}</td>
+                        <!-- 日付 -->
+                        <td>{{$d->attendance_day->format('m/d')}}</td>
+                        <!-- 曜日 -->
                         <td>{{$week[$d->attendance_day->dayOfWeek]}}</td>
+                        <!-- 出社時間（hour） -->
                           <td>zz</td>
+                        <!-- 出社時間（minitus）-->
                           <td>zz</td>
+                        <!-- 退社時間（hour）-->
                           <td>zz</td>
+                        <!-- 退社時間（minitus）-->
                           <td>zz</td>
+                        <!-- 在社時間 -->
                           <td>zz</td>
+                        <!-- 備考 -->
                           <td>zz</td>
                         </tr>
                         @endforeach
