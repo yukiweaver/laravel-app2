@@ -77,7 +77,10 @@
                         <!-- 出社ボタン -->
                           <td>
                             @if ($today == $d->attendance_day)
-                              <a href="#" class="btn btn-primary">出社</a>
+                              <form action="{{route('start_time')}}" method="post">
+                                @csrf
+                                <input type="submit" value="出社" class="btn btn-primary">
+                              </form>
                             @endif
                           </td>
                         <!-- 退社時間（hour）-->

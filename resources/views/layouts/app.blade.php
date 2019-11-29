@@ -10,6 +10,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
@@ -75,6 +76,15 @@
                 </div>
             </div>
         </nav>
+
+        <!-- フラッシュメッセージ -->
+        @if (Session::has('flash_message'))
+          <p class="bg-success">{!! Session::get('flash_message') !!}</p>
+        @endif
+
+        @if (Session::has('error_message'))
+          <p class="bg-danger">{!! Session::get('error_message') !!}</p>
+        @endif
 
         <main class="py-4">
             @yield('content')

@@ -24,4 +24,4 @@ Route::get('/home', 'HomeController@index')->name('home'); // 名前path route('
 Route::get('/edit', 'UserController@edit')->name('edit');
 Route::get('/show', 'UserController@show')->name('show');
 Route::post('/update/{id}', 'UserController@update')->name('update');
-Route::post('attendance/start_time', 'AttendanceController@start_time')->name('start_time');
+Route::post('attendance/start_time', 'AttendanceController@startTime')->name('start_time');
