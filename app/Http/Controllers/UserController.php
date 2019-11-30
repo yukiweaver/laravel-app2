@@ -81,6 +81,7 @@ class UserController extends Controller
       'firstDay' => $firstDay,
       'lastDay' => $lastDay,
       'today' => $today,
+      'currentDay' => $currentDay->format('Y-m-d'),
     ];
     return view('user.show', $viewParams);
   }

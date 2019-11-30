@@ -26,3 +26,4 @@ Route::get('/show', 'UserController@show')->name('show');
 Route::post('/update/{id}', 'UserController@update')->name('update');
 Route::post('attendance/start_time', 'AttendanceController@startTime')->name('start_time');
 Route::post('attendance/end_time', 'AttendanceController@endTime')->name('end_time');
+Route::get('attendance/edit', 'AttendanceController@edit')->name('attendance_edit');

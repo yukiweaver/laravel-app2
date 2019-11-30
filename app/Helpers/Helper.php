@@ -8,3 +8,10 @@ if (!function_exists('carbon')) {
         return Carbon::create($year, $month, $day, $hour, $minute, $second, $tz);
     }
 }
+
+if (!function_exists('calculation')) {
+  function calculation($secondTime)
+  {
+    return round($secondTime / 3600, 2);
+  }
+}

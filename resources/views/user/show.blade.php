@@ -42,7 +42,7 @@
                     </table>
 
                     <div class="btn-group">
-                      <a href="#" class="btn btn-primary">勤怠編集</a>
+                      <a href="/attendance/edit?current_day={{$currentDay}}" class="btn btn-primary">勤怠編集</a>
                     </div>
 
                     <table class="table table-bordered table-striped table-condensed">
@@ -115,7 +115,7 @@
                         <!-- 在社時間 -->
                           <td>
                             @if ($d->start_time !== null && $d->end_time !== null)
-                                {{$d->start_time->diffInSeconds($d->end_time)}}
+                                {{calculation($d->start_time->diffInSeconds($d->end_time))}}
                             @endif
                           </td>
                         <!-- 備考 -->

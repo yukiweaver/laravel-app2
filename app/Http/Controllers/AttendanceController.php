@@ -74,4 +74,34 @@ class AttendanceController extends Controller
     Session::flash('flash_message', config('const.SUCCESS_REGIST_END_TIME'));
     return redirect('/show');
   }
+
+  public function edit(Request $request)
+  {
+    $user = auth()->user();
+    $userId = $user->id;
+
+    // クエリパラメータ チェック
+    $validator = $this->validator($request->query());
+    if ($validator->fails()) {
+      return redirect('/show');
+    }
+    $viewParams = [];
+    return view('attendance.edit', $viewParams);
+  }
+
+  // private
+
+  /**
+   * クエリパラメータチェック用
+   * 
+   * @param  array  $data
+   * @return \Illuminate\Contracts\Validation\Validator
+   */
+  private function validator(array $data)
+  {
+    $validator = Validator::make($data, [
+      'current_day' => 'date',
+    ]);
+    return $validator;
+  }
 }
