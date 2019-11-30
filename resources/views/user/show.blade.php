@@ -71,12 +71,20 @@
                         <!-- 曜日 -->
                         <td>{{$week[$d->attendance_day->dayOfWeek]}}</td>
                         <!-- 出社時間（hour） -->
-                          <td></td>
+                          <td>
+                            @if ($d->start_time !== null)
+                              {{$d->start_time->format('H')}}
+                            @endif
+                          </td>
                         <!-- 出社時間（minitus）-->
-                          <td></td>
+                          <td>
+                            @if ($d->start_time !== null)
+                              {{$d->start_time->format('i')}}
+                            @endif
+                          </td>
                         <!-- 出社ボタン -->
                           <td>
-                            @if ($today == $d->attendance_day)
+                            @if ($today == $d->attendance_day && $d->start_time === null)
                               <form action="{{route('start_time')}}" method="post">
                                 @csrf
                                 <input type="submit" value="出社" class="btn btn-primary">
@@ -84,17 +92,32 @@
                             @endif
                           </td>
                         <!-- 退社時間（hour）-->
-                          <td></td>
+                          <td>
+                            @if ($d->end_time !== null)
+                              {{$d->end_time->format('H')}}
+                            @endif
+                          </td>
                         <!-- 退社時間（minitus）-->
-                          <td></td>
+                          <td>
+                            @if ($d->end_time !== null)
+                              {{$d->end_time->format('i')}}
+                            @endif
+                          </td>
                         <!-- 退社ボタン -->
                           <td>
-                            @if ($today == $d->attendance_day)
-                              <a href="#" class="btn btn-primary">退社</a>
+                            @if ($today == $d->attendance_day && $d->start_time !== null && $d->end_time === null)
+                              <form action="{{route('end_time')}}" method="post">
+                                @csrf
+                                <input type="submit" value="退社" class="btn btn-primary">
+                              </form>
                             @endif
                           </td>
                         <!-- 在社時間 -->
-                          <td></td>
+                          <td>
+                            @if ($d->start_time !== null && $d->end_time !== null)
+                                {{$d->start_time->diffInSeconds($d->end_time)}}
+                            @endif
+                          </td>
                         <!-- 備考 -->
                           <td></td>
                         </tr>

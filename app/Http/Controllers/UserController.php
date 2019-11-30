@@ -20,6 +20,9 @@ class UserController extends Controller
     $sessLogin = session()->get('_login');
     $userId = $sessLogin['user_id'];
     $user = User::find($userId);
+
+    $test = app_path();
+    dd($test);
     
     if (empty($request->input('current_day'))) {
       $currentDay = Carbon::now();
@@ -65,9 +68,11 @@ class UserController extends Controller
     }
 
     $date = Attendance::getOneMonthData($firstDay, $lastDay);
-    // 曜日表示のため、Carbonインスタンスに変更
+    // Carbonインスタンスに変更
     foreach ($date as $d) {
       $d->attendance_day = Carbon::parse($d->attendance_day);
+      $d->start_time = $d->start_time ? Carbon::parse($d->start_time) : null;
+      $d->end_time = $d->end_time ? Carbon::parse($d->end_time) : null;
     }
     
     $viewParams = [
