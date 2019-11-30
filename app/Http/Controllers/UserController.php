@@ -20,9 +20,6 @@ class UserController extends Controller
     $sessLogin = session()->get('_login');
     $userId = $sessLogin['user_id'];
     $user = User::find($userId);
-
-    $test = app_path();
-    dd($test);
     
     if (empty($request->input('current_day'))) {
       $currentDay = Carbon::now();
