@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Attendance;
 use Illuminate\Support\Facades\Config;
 use Session;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
@@ -26,7 +27,7 @@ class AttendanceController extends Controller
     }
 
     try {
-      $attendance = Attendance::getAttendanceTodayData($userId, $today);
+      $attendance = Attendance::getAttendanceCurrentData($userId, $today);
       if (empty($attendance)) {
         throw new Exception(config('const.ERR_REGIST_START_TIME'));
       }
@@ -58,7 +59,7 @@ class AttendanceController extends Controller
     }
 
     try {
-      $attendance = Attendance::getAttendanceTodayData($userId, $today);
+      $attendance = Attendance::getAttendanceCurrentData($userId, $today);
       if (empty($attendance)) {
         throw new Exception(config('const.ERR_REGIST_END_TIME'));
       }
@@ -85,7 +86,24 @@ class AttendanceController extends Controller
     if ($validator->fails()) {
       return redirect('/show');
     }
-    $viewParams = [];
+
+    $currentDay = Carbon::parse($request->input('current_day'));
+    $firstDay = $currentDay->copy()->firstOfMonth(); // 月初
+    $lastDay = $firstDay->copy()->endOfMonth(); // 月末
+    $date = Attendance::getOneMonthData($firstDay, $lastDay);
+    $week = ['日', '月', '火', '水', '木', '金', '土'];
+
+    foreach ($date as $d) {
+      $d->attendance_day = Carbon::parse($d->attendance_day);
+      $d->start_time = $d->start_time ? Carbon::parse($d->start_time) : null;
+      $d->end_time = $d->end_time ? Carbon::parse($d->end_time) : null;
+    }
+    
+    $viewParams = [
+      'date' => $date,
+      'week' => $week,
+      'currentDay' => $currentDay->format('Y-m-d'),
+    ];
     return view('attendance.edit', $viewParams);
   }
 
@@ -100,7 +118,7 @@ class AttendanceController extends Controller
   private function validator(array $data)
   {
     $validator = Validator::make($data, [
-      'current_day' => 'date',
+      'current_day' => 'date|required',
     ]);
     return $validator;
   }

@@ -119,7 +119,7 @@
                             @endif
                           </td>
                         <!-- 備考 -->
-                          <td></td>
+                          <td>{{$d->note}}</td>
                         </tr>
                         @endforeach
                       </tbody>

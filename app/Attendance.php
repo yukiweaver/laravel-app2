@@ -26,12 +26,12 @@ class Attendance extends Model
     }
 
     /**
-     * 今日の日付の勤怠データを取得
+     * 指定の日付の勤怠データを取得
      * @return App\Attendance
      */
-    public static function getAttendanceTodayData($userId, $today)
+    public static function getAttendanceCurrentData($userId, $currentDay)
     {
-      $attendance = self::where('user_id', $userId)->where('attendance_day', $today)->first();
+      $attendance = self::where('user_id', $userId)->where('attendance_day', $currentDay)->first();
       return $attendance;
     }
 }
