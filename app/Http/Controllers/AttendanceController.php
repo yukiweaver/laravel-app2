@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\HTTP\Requests\AttendanceRequest;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Attendance;
@@ -76,6 +77,9 @@ class AttendanceController extends Controller
     return redirect('/show');
   }
 
+  /**
+   * 勤怠編集アクション
+   */
   public function edit(Request $request)
   {
     $user = auth()->user();
@@ -105,6 +109,18 @@ class AttendanceController extends Controller
       'currentDay' => $currentDay->format('Y-m-d'),
     ];
     return view('attendance.edit', $viewParams);
+  }
+
+  /**
+   * 勤怠更新アクション
+   */
+  public function update(AttendanceRequest $request)
+  {
+    $user = auth()->user();
+    $userId = $user->id;
+
+    // dd($request->all());
+    return redirect('/show');
   }
 
   // private
