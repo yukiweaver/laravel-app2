@@ -7,6 +7,15 @@
             <div class="card">
                 <div class="card-body">
                   <h2>勤怠編集</h2>
+                  @if (count($errors) > 0)
+                  <div class="errors">
+                    <ul>
+                      @foreach ($errors->all() as $error)
+                        <li>{{$error}}</li>
+                      @endforeach
+                    </ul>
+                  @endif
+                  </div>
                   <form action="{{route('attendance_update')}}" method="post">
                     @csrf
                     <table class="table table-bordered table-striped table-condensed">
@@ -30,17 +39,17 @@
                           <!-- 出社時間 -->
                           <td>
                             @if ($d->start_time === null)
-                              <input type="time" name="start_time[{{$d->id}}]" value="" class="form-control">
+                              <input type="time" name="attendance[{{$d->id}}][start_time]" value="" class="form-control">
                             @else
-                              <input type="time" name="start_time[{{$d->id}}]" value="{{$d->start_time->format('H:i')}}" class="form-control">
+                              <input type="time" name="attendance[{{$d->id}}][start_time]" value="{{$d->start_time->format('H:i')}}" class="form-control">
                             @endif
                           </td>
                           <!-- 退社時間 -->
                           <td>
                             @if ($d->end_time === null)
-                              <input type="time" name="end_time[{{$d->id}}]" value="" class="form-control">
+                              <input type="time" name="attendance[{{$d->id}}][end_time]" value="" class="form-control">
                             @else
-                              <input type="time" name="end_time[{{$d->id}}]" value="{{$d->end_time->format('H:i')}}" class="form-control">
+                              <input type="time" name="attendance[{{$d->id}}][end_time]" value="{{$d->end_time->format('H:i')}}" class="form-control">
                             @endif
                           </td>
                           <!-- 在社時間 -->
@@ -51,7 +60,7 @@
                           </td>
                           <!-- 備考 -->
                           <td>
-                            <input type="text" name="note[{{$d->id}}]" value="{{$d->note}}" class="form-control">
+                            <input type="text" name="attendance[{{$d->id}}][note]" value="{{$d->note}}" class="form-control">
                           </td>
                         </tr>
                         @endforeach

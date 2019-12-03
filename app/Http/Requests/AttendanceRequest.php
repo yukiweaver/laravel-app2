@@ -24,9 +24,9 @@ class AttendanceRequest extends FormRequest
     public function rules()
     {
         $rules = [
-          'start_time.*' => 'date_format:H:i',
-          'end_time.*' => 'date_format:H:i',
-          'note.*' => 'string|max:100',
+          'attendance.*.start_time' => 'date_format:H:i|string|nullable',
+          'attendance.*.end_time' => 'date_format:H:i|string|nullable',
+          'attendance.*.note' => 'string|max:100|nullable',
         ];
         return $rules;
     }

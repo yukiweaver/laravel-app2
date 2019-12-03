@@ -118,8 +118,32 @@ class AttendanceController extends Controller
   {
     $user = auth()->user();
     $userId = $user->id;
+    $today = Carbon::today();
 
-    // dd($request->all());
+    $message = null;
+    foreach ($request->attendance as $key => $val) {
+      $startTime = $val['start_time'];
+      $endTime = $val['end_time'];
+      $note = $val['note'];
+      if ($startTime > $endTime) {
+        $message = config('const.ERR_START_TIME_LARGER');
+        break;
+      }
+      $attendance = Attendance::find($key);
+      if (Carbon::parse($attendance->attendance_day) > $today) {
+        $dbStartTime = Carbon::parse($attendance->start_time)->format('H:i');
+        $dbEndTime = Carbon::parse($attendance->end_time)->format('H:i');
+        $dbNote = $attendance->note;
+        if ($dbStartTime != $startTime || $dbEndTime != $endTime || $dbNote != $note) {
+          $message = config('const.ERR_EDIT_AFTER_TOMORROW');
+          break;
+        }
+      }
+    }
+    
+    if (!is_null($message)) {
+      return redirect('/show')->with('error_message', $message);
+    }
     return redirect('/show');
   }
 
