@@ -10,6 +10,7 @@ use App\Attendance;
 use Illuminate\Support\Facades\Config;
 use Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
@@ -96,6 +97,7 @@ class AttendanceController extends Controller
     $lastDay = $firstDay->copy()->endOfMonth(); // 月末
     $date = Attendance::getOneMonthData($firstDay, $lastDay);
     $week = ['日', '月', '火', '水', '木', '金', '土'];
+    $today = Carbon::today();
 
     foreach ($date as $d) {
       $d->attendance_day = Carbon::parse($d->attendance_day);
@@ -107,6 +109,7 @@ class AttendanceController extends Controller
       'date' => $date,
       'week' => $week,
       'currentDay' => $currentDay->format('Y-m-d'),
+      'today' => $today,
     ];
     return view('attendance.edit', $viewParams);
   }
@@ -119,32 +122,61 @@ class AttendanceController extends Controller
     $user = auth()->user();
     $userId = $user->id;
     $today = Carbon::today();
+    $currentDay = Carbon::parse($request->current_day)->format('Y-m-d');
 
+    $dbParams = [];
     $message = null;
     foreach ($request->attendance as $key => $val) {
       $startTime = $val['start_time'];
       $endTime = $val['end_time'];
       $note = $val['note'];
+      // 出勤時間、退勤時間、どちらか一方のみ空ならエラー
+      if (!empty($startTime) && empty($endTime) || empty($startTime) && !empty($endTime)) {
+        $message = config('const.ERR_INVALID_DATA');
+        break;
+      }
+      // 出勤時間 > 退勤時間　でエラー
       if ($startTime > $endTime) {
         $message = config('const.ERR_START_TIME_LARGER');
         break;
       }
       $attendance = Attendance::find($key);
+      // 明日以降の編集は不可
       if (Carbon::parse($attendance->attendance_day) > $today) {
-        $dbStartTime = Carbon::parse($attendance->start_time)->format('H:i');
-        $dbEndTime = Carbon::parse($attendance->end_time)->format('H:i');
+        $dbStartTime = $attendance->start_time ? Carbon::parse($attendance->start_time)->format('H:i') : null;
+        $dbEndTime = $attendance->end_time ? Carbon::parse($attendance->end_time)->format('H:i') : null;
         $dbNote = $attendance->note;
         if ($dbStartTime != $startTime || $dbEndTime != $endTime || $dbNote != $note) {
           $message = config('const.ERR_EDIT_AFTER_TOMORROW');
           break;
         }
       }
+      $dbParams[] = [
+        'id' => $key,
+        'start_time' => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
+        'end_time' => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
+        'note' => $note,
+      ];
     }
     
     if (!is_null($message)) {
-      return redirect('/show')->with('error_message', $message);
+      return redirect("/show?current_day=$currentDay")->with('error_message', $message);
     }
-    return redirect('/show');
+
+    // 更新処理
+    $i = 0;
+    $dbParam = [];
+    foreach ($dbParams as $param) {
+      $dbParam[] = [
+        'start_time' => $param['start_time'],
+        'end_time' => $param['end_time'],
+        'note' => $param['note'],
+      ];
+      Attendance::find($param['id'])->update($dbParam[$i]);
+      $i++;
+    }
+
+    return redirect("/show?current_day=$currentDay")->with('flash_message', config('const.SUCCESS_REGIST_ATTENDANCE_DATA'));
   }
 
   // private

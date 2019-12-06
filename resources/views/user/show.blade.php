@@ -33,8 +33,13 @@
                         <th>氏名：{{$user->name}}</th>
                           <th>コード</th>
                           <th>2222</th>
-                          <th>出勤日数：
-                            0日
+                          <th>
+                            出勤日数：
+                            @if ($attendanceDays > 0)
+                              {{$attendanceDays}}日
+                            @else
+                              0日
+                            @endif
                           </th>
                         <th>締め：{{$lastDay->format('m/d')}}</th>
                         </tr>

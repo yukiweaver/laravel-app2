@@ -65,11 +65,15 @@ class UserController extends Controller
     }
 
     $date = Attendance::getOneMonthData($firstDay, $lastDay);
-    // Carbonインスタンスに変更
+    // Carbonインスタンスに変更（出勤日数もカウント）
+    $attendanceDays = 0;
     foreach ($date as $d) {
       $d->attendance_day = Carbon::parse($d->attendance_day);
       $d->start_time = $d->start_time ? Carbon::parse($d->start_time) : null;
       $d->end_time = $d->end_time ? Carbon::parse($d->end_time) : null;
+      if (isset($d->start_time)) {
+        $attendanceDays++;
+      }
     }
     
     $viewParams = [
@@ -82,6 +86,7 @@ class UserController extends Controller
       'lastDay' => $lastDay,
       'today' => $today,
       'currentDay' => $currentDay->format('Y-m-d'),
+      'attendanceDays' => $attendanceDays,
     ];
     return view('user.show', $viewParams);
   }

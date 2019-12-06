@@ -15,6 +15,17 @@ class Attendance extends Model
     }
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+      'start_time', 
+      'end_time', 
+      'note',
+  ];
+
+    /**
      * 1ヶ月分の勤怠データを取得
      */
     public static function getOneMonthData($firstDay, $lastDay)

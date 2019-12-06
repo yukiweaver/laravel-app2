@@ -18,6 +18,7 @@
                   </div>
                   <form action="{{route('attendance_update')}}" method="post">
                     @csrf
+                    <input type="hidden" name="current_day" value="{{$currentDay}}">
                     <table class="table table-bordered table-striped table-condensed">
                       <thead>
                         <tr>
@@ -39,17 +40,17 @@
                           <!-- 出社時間 -->
                           <td>
                             @if ($d->start_time === null)
-                              <input type="time" name="attendance[{{$d->id}}][start_time]" value="" class="form-control">
+                              <input type="time" name="attendance[{{$d->id}}][start_time]" value="" class="form-control" @if ($d->attendance_day > $today) readonly @endif>
                             @else
-                              <input type="time" name="attendance[{{$d->id}}][start_time]" value="{{$d->start_time->format('H:i')}}" class="form-control">
+                              <input type="time" name="attendance[{{$d->id}}][start_time]" value="{{$d->start_time->format('H:i')}}" class="form-control" @if ($d->attendance_day > $today) readonly @endif>
                             @endif
                           </td>
                           <!-- 退社時間 -->
                           <td>
                             @if ($d->end_time === null)
-                              <input type="time" name="attendance[{{$d->id}}][end_time]" value="" class="form-control">
+                              <input type="time" name="attendance[{{$d->id}}][end_time]" value="" class="form-control" @if ($d->attendance_day > $today) readonly @endif>
                             @else
-                              <input type="time" name="attendance[{{$d->id}}][end_time]" value="{{$d->end_time->format('H:i')}}" class="form-control">
+                              <input type="time" name="attendance[{{$d->id}}][end_time]" value="{{$d->end_time->format('H:i')}}" class="form-control" @if ($d->attendance_day > $today) readonly @endif>
                             @endif
                           </td>
                           <!-- 在社時間 -->
@@ -60,7 +61,7 @@
                           </td>
                           <!-- 備考 -->
                           <td>
-                            <input type="text" name="attendance[{{$d->id}}][note]" value="{{$d->note}}" class="form-control">
+                            <input type="text" name="attendance[{{$d->id}}][note]" value="{{$d->note}}" class="form-control" @if ($d->attendance_day > $today) readonly @endif>
                           </td>
                         </tr>
                         @endforeach
