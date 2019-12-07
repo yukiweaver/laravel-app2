@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
 
-  public function index()
+  public function index(Request $request)
   {
     $user = auth()->user();
     $userId = $user->id;
