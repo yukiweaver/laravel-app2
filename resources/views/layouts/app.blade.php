@@ -54,6 +54,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('show') }}">{{ __('ホーム') }}</a>
                             </li>
+                            @if (Auth::user()->admin_flg)
+                              <li class="nav-item">
+                                <a class="nav-link" href="#">{{ __('ユーザ一覧') }}</a>
+                              </li>
+                            @endif
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>

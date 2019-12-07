@@ -28,3 +28,4 @@ Route::post('attendance/start_time', 'AttendanceController@startTime')->name('st
 Route::post('attendance/end_time', 'AttendanceController@endTime')->name('end_time');
 Route::get('attendance/edit', 'AttendanceController@edit')->name('attendance_edit');
 Route::post('attendance/update', 'AttendanceController@update')->name('attendance_update');
+Route::get('/index', 'UserController@index')->name('index');

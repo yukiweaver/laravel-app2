@@ -32,6 +32,7 @@ class Attendance extends Model
     {
       $oneMonthData = self::where('attendance_day', '>=', $firstDay)
                       ->where('attendance_day', '<=', $lastDay)
+                      ->where('user_id', auth()->user()->id)
                       ->get();
       return $oneMonthData;
     }
