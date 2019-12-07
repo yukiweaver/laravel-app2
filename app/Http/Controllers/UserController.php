@@ -17,8 +17,16 @@ class UserController extends Controller
 
   public function index(Request $request)
   {
-    $user = auth()->user();
-    $userId = $user->id;
+    $flgData = $request->flg_data;
+    // admin以外は不可
+    if (!$flgData['admin_flg']) {
+      return redirect('/show');
+    }
+    $users = User::all();
+    $viewParams = [
+      'users' => $users,
+    ];
+    return view('user.index', $viewParams);
   }
 
   public function show(Request $request)
@@ -117,6 +125,27 @@ class UserController extends Controller
       'password' => $validated['password'],
     ]);
     return redirect('/show');
+  }
+
+  public function adminUpdate(UserRequest $request)
+  {
+    $flgData = $request->flg_data;
+    // admin以外は不可
+    if (!$flgData['admin_flg']) {
+      return redirect('/show');
+    }
+    $params = $request->all();
+    $user = User::find($params['user_id']);
+    try {
+      $result = $user->fill($params)->save();
+      if (!$result) {
+        throw new Exception(config('const.ERR_UPDATE'));
+      }
+    } catch (Exception $e) {
+      return redirect('/index')->with('error_message', $e->getMessage());
+    }
+
+    return redirect('/index')->with('flash_message', config('const.SUCCESS_UPDATE'));
   }
 
 

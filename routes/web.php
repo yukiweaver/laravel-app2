@@ -30,5 +30,6 @@ Route::group(['middleware' => 'admin'], function() {
   Route::get('attendance/edit', 'AttendanceController@edit')->name('attendance_edit');
   Route::post('attendance/update', 'AttendanceController@update')->name('attendance_update');
   Route::get('/index', 'UserController@index')->name('index');
+  Route::post('/admin_update', 'UserController@adminUpdate')->name('admin_update');
 });
 

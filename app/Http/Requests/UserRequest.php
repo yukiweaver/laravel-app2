@@ -23,12 +23,27 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255',
+            'email' => 'required|string|max:255|email:rfc',
             'belong' => 'required|string|max:255',
             'password' => 'required|string|min:8',
             'password_confirmation' => 'required|same:password',
+            'number' => 'nullable|string|max:255',
+            'card_number' => 'nullable|string|max:255',
+            'basic_work_time' => 'nullable|string',
+            'designate_start_time' => 'nullable|string',
+            'designate_end_time' => 'nullable|string',
         ];
+
+        // 入力フィールドが存在しない、or値が空ならバリデーションから除外
+        if (empty($this->password)) {
+          unset($rules['password']);
+        }
+        if (empty($this->password_confirmation)) {
+          unset($rules['password_confirmation']);
+        }
+
+        return $rules;
     }
 }
