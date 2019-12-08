@@ -183,7 +183,7 @@ class AttendanceController extends Controller
         'end_time' => $param['end_time'],
         'note' => $param['note'],
       ];
-      Attendance::find($param['id'])->update($dbParam[$i]);
+      Attendance::find($param['id'])->fill($dbParam[$i])->save();
       $i++;
     }
 

@@ -103,6 +103,7 @@ class UserController extends Controller
     $date = Attendance::getOneMonthData($firstDay, $lastDay);
     // Carbonインスタンスに変更（出勤日数もカウント）
     $attendanceDays = 0;
+    $totalWorkingTime = 0;
     foreach ($date as $d) {
       $d->attendance_day = Carbon::parse($d->attendance_day);
       $d->start_time = $d->start_time ? Carbon::parse($d->start_time) : null;
@@ -110,7 +111,16 @@ class UserController extends Controller
       if (isset($d->start_time)) {
         $attendanceDays++;
       }
+      if ($d->start_time !== null && $d->end_time !== null) {
+        $totalWorkingTime += $d->start_time->diffInSeconds($d->end_time);
+      }
     }
+    $totalWorkingTime = calculation($totalWorkingTime);
+    // $totalWorkingHours = $user->basic_work_time * strval($attendanceDays);
+    // var_dump($user->basic_work_time);
+    // var_dump($attendanceDays);
+    // var_dump($totalWorkingHours);
+    // exit;
     
     $viewParams = [
       'user' => $user,
@@ -123,6 +133,7 @@ class UserController extends Controller
       'today' => $today,
       'currentDay' => $currentDay->format('Y-m-d'),
       'attendanceDays' => $attendanceDays,
+      'totalWorkingTime' => $totalWorkingTime,
     ];
     return view('user.show', $viewParams);
   }

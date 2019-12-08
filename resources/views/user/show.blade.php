@@ -49,7 +49,7 @@
                     <div class="btn-group">
                       <a href="/attendance/edit?current_day={{$currentDay}}" class="btn btn-primary">勤怠編集</a>
                       <a href="" class="btn btn-primary">CSV出力</a>
-                      <a href="" class="btn btn-primary">勤怠ログ</a>
+                      <a href="" class="btn btn-primary">勤怠ログ（承認済み）</a>
                     </div>
 
                     <table class="table table-bordered table-striped table-condensed">
@@ -138,21 +138,29 @@
                         <!-- 備考 -->
                           <td>{{$d->note}}</td>
                         <!-- 終了予定時間（hours）-->
-                          <td>zz</td>
+                          <td></td>
                         <!-- 終了予定時間（minites）-->
-                          <td>zz</td>
+                          <td></td>
                         <!-- 時間外時間 -->
-                          <td>zz</td>
+                          <td></td>
                         <!-- 業務処理内容-->
-                          <td>zz</td>
+                          <td></td>
                         <!-- 指示者確認 -->
-                          <td>zz</td>
+                          <td></td>
                         </tr>
                         @endforeach
-                        <td colspan="2">総合勤務時間</td>
+                        <td colspan="2">
+                          総合勤務時間：
+                        </td>
                         <td colspan="6"></td>
                         <td></td>
-                        <td>在社時間の合計</td>
+                        <td>在社時間の合計：
+                          @if ($totalWorkingTime > 0)
+                            {{$totalWorkingTime}}
+                          @else
+                            0.00
+                          @endif
+                        </td>
                         <td></td>
                         <td></td>
                         <td></td>
