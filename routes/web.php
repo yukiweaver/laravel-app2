@@ -19,7 +19,7 @@ Route::resource('book', 'BookController');
 // Route::get('/', 'SiteTopController@top');
 Auth::routes();
 
-Route::get('/', 'Auth\LoginController@showLoginForm');
+Route::get('/', 'Auth\LoginController@showLoginForm')->name('route');
 Route::get('/home', 'HomeController@index')->name('home'); // 名前path route('home')
 Route::group(['middleware' => 'admin'], function() {
   Route::get('/edit', 'UserController@edit')->name('edit');
@@ -31,5 +31,6 @@ Route::group(['middleware' => 'admin'], function() {
   Route::post('attendance/update', 'AttendanceController@update')->name('attendance_update');
   Route::get('/index', 'UserController@index')->name('index');
   Route::post('/admin_update', 'UserController@adminUpdate')->name('admin_update');
+  Route::get('/working_users_list', 'UserController@workingUsersList')->name('working_users_list');
 });
 

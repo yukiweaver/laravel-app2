@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
+
+ /**
+  * コンストラクタ
+  * 継承したControllerクラスのmiddleware()を利用する
+  */
+  public function __construct()
+  {
+    // ログイン状態を判断するミドルウェア
+    $this->middleware('auth');
+  }
+
   /**
    * 出社時間登録アクション
    */

@@ -59,7 +59,7 @@
                                 <a class="nav-link" href="{{ route('index') }}">{{ __('ユーザ一覧') }}</a>
                               </li>
                               <li class="nav-item">
-                                <a class="nav-link" href="#">{{ __('出勤社員一覧') }}</a>
+                                <a class="nav-link" href="{{ route('working_users_list') }}">{{ __('出勤社員一覧') }}</a>
                               </li>
                             @endif
                             <li class="nav-item dropdown">
