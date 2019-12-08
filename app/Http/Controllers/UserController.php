@@ -201,7 +201,7 @@ class UserController extends Controller
       // ];
       // ↓ なぜか取れない 
       // $attendance = Attendance::whereRaw('user_id = :user_id and attendance_day = :attendance_day and end_time = :end_time', $dbParams)->first();
-      $attendance = DB::table('attendances')->where('attendance_day', $today)->where('user_id', $user->id)->where('end_time', null)->whereNotNull('start_time')->first();
+      $attendance = Attendance::getTodayData($user->id, $today);
       if (is_null($attendance)) {
         continue;
       }

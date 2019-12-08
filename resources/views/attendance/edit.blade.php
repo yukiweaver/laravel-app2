@@ -26,8 +26,10 @@
                           <th>曜日</th>
                           <th>出社</th>
                           <th>退社</th>
+                          <th>翌日</th>
                           <th>在社時間</th>
                           <th>備考</th>
+                          <th>指示者確認</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -53,6 +55,8 @@
                               <input type="time" name="attendance[{{$d->id}}][end_time]" value="{{$d->end_time->format('H:i')}}" class="form-control" @if ($d->attendance_day > $today) readonly @endif>
                             @endif
                           </td>
+                          <!-- 翌日 -->
+                          <td></td>
                           <!-- 在社時間 -->
                           <td>
                             @if ($d->start_time !== null && $d->end_time !== null)
@@ -63,6 +67,8 @@
                           <td>
                             <input type="text" name="attendance[{{$d->id}}][note]" value="{{$d->note}}" class="form-control" @if ($d->attendance_day > $today) readonly @endif>
                           </td>
+                          <!-- 指示者確認 -->
+                          <td></td>
                         </tr>
                         @endforeach
                       </tbody>

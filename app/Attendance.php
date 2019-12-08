@@ -46,4 +46,13 @@ class Attendance extends Model
       $attendance = self::where('user_id', $userId)->where('attendance_day', $currentDay)->first();
       return $attendance;
     }
+
+    /**
+     * 指定ユーザの本日の勤怠データを取得（出社中の場合のみ）
+     */
+    public static function getTodayData($userId, $today)
+    {
+      $attendance = self::where('attendance_day', $today)->where('user_id', $userId)->where('end_time', null)->whereNotNull('start_time')->first();
+      return $attendance;
+    }
 }

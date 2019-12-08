@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-12">
+        <div class="col-md-16">
             <div class="card">
                 <div class="card-body">
                     @if (session('status'))
@@ -48,19 +48,29 @@
 
                     <div class="btn-group">
                       <a href="/attendance/edit?current_day={{$currentDay}}" class="btn btn-primary">勤怠編集</a>
+                      <a href="" class="btn btn-primary">CSV出力</a>
+                      <a href="" class="btn btn-primary">勤怠ログ</a>
                     </div>
 
                     <table class="table table-bordered table-striped table-condensed">
                       <thead>
                         <tr>
+                          <th rowspan="2">残業申請</th>
                           <th rowspan="2">日付</th>
                           <th rowspan="2">曜日</th>
                           <th colspan="3">出社</th>
                           <th colspan="3">退社</th>
                           <th rowspan="2">在社時間</th>
                           <th rowspan="2">備考</th>
+                          <th colspan="2">終了予定時間</th>
+                          <th rowspan="2">時間外時間</th>
+                          <th rowspan="2">業務処理内容</th>
+                          <th rowspan="2">指示者確認</th>
                         </tr>
                         <tr>
+                          <th>時</th>
+                          <th>分</th>
+                          <th></th>
                           <th>時</th>
                           <th>分</th>
                           <th></th>
@@ -71,10 +81,12 @@
                       <tbody>
                         @foreach ($date as $d)
                         <tr>
+                        <!-- 残業申請 -->
+                          <td><a href="#" class="btn btn-primary">残業申請</a></td>
                         <!-- 日付 -->
-                        <td>{{$d->attendance_day->format('m/d')}}</td>
+                          <td>{{$d->attendance_day->format('m/d')}}</td>
                         <!-- 曜日 -->
-                        <td>{{$week[$d->attendance_day->dayOfWeek]}}</td>
+                          <td>{{$week[$d->attendance_day->dayOfWeek]}}</td>
                         <!-- 出社時間（hour） -->
                           <td>
                             @if ($d->start_time !== null)
@@ -125,8 +137,28 @@
                           </td>
                         <!-- 備考 -->
                           <td>{{$d->note}}</td>
+                        <!-- 終了予定時間（hours）-->
+                          <td>zz</td>
+                        <!-- 終了予定時間（minites）-->
+                          <td>zz</td>
+                        <!-- 時間外時間 -->
+                          <td>zz</td>
+                        <!-- 業務処理内容-->
+                          <td>zz</td>
+                        <!-- 指示者確認 -->
+                          <td>zz</td>
                         </tr>
                         @endforeach
+                        <td colspan="2">総合勤務時間</td>
+                        <td colspan="6"></td>
+                        <td></td>
+                        <td>在社時間の合計</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>テスト</td>
                       </tbody>
                     </table>
                 </div>
