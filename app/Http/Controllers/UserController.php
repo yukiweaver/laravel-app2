@@ -236,6 +236,20 @@ class UserController extends Controller
     return view('user.import_users_input', $viewParams);
   }
 
+  /**
+   * CSVインポート完了アクション
+   */
+  public function importUsersComplete(Request $request)
+  {
+    $flgData = $request->flg_data; // middleware
+    // admin以外は不可
+    if (!$flgData['admin_flg']) {
+      return redirect('/show');
+    }
+    $viewParams = [];
+    return view('user.import_users_complete', $viewParams);
+  }
+
 
   // private
   
