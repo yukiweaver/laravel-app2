@@ -32,5 +32,7 @@ Route::group(['middleware' => 'admin'], function() {
   Route::get('/index', 'UserController@index')->name('index');
   Route::post('/admin_update', 'UserController@adminUpdate')->name('admin_update');
   Route::get('/working_users_list', 'UserController@workingUsersList')->name('working_users_list');
+  Route::get('/import_users_input', 'UserController@importUsersInput')->name('import_users_input');
+  Route::post('/import_users_complete', 'UserController@importUsersComplete')->name('import_users_complete');
 });
 

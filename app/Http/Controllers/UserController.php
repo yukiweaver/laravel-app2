@@ -101,7 +101,7 @@ class UserController extends Controller
     }
 
     $date = Attendance::getOneMonthData($firstDay, $lastDay);
-    // Carbonインスタンスに変更（出勤日数もカウント）
+    // Carbonインスタンスに変更（出勤日数、在社時間の合計もカウント）
     $attendanceDays = 0;
     $totalWorkingTime = 0;
     foreach ($date as $d) {
@@ -116,11 +116,7 @@ class UserController extends Controller
       }
     }
     $totalWorkingTime = calculation($totalWorkingTime);
-    // $totalWorkingHours = $user->basic_work_time * strval($attendanceDays);
-    // var_dump($user->basic_work_time);
-    // var_dump($attendanceDays);
-    // var_dump($totalWorkingHours);
-    // exit;
+    $totalWorkingHours = timeTenDiv($user->basic_work_time) * $attendanceDays; // 総合勤務時間
     
     $viewParams = [
       'user' => $user,
@@ -134,6 +130,7 @@ class UserController extends Controller
       'currentDay' => $currentDay->format('Y-m-d'),
       'attendanceDays' => $attendanceDays,
       'totalWorkingTime' => $totalWorkingTime,
+      'totalWorkingHours' => $totalWorkingHours,
     ];
     return view('user.show', $viewParams);
   }
@@ -223,6 +220,20 @@ class UserController extends Controller
       'workingUsers' => $workingUsers,
     ];
     return view('user.working_users_list', $viewParams);
+  }
+
+  /**
+   * CSVインポート入力アクション
+   */
+  public function importUsersInput(Request $request)
+  {
+    $flgData = $request->flg_data; // middleware
+    // admin以外は不可
+    if (!$flgData['admin_flg']) {
+      return redirect('/show');
+    }
+    $viewParams = [];
+    return view('user.import_users_input', $viewParams);
   }
 
 
