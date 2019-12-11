@@ -33,6 +33,7 @@ class User extends Authenticatable
         'basic_work_time',
         'number',
         'card_number',
+        'csv_file',
     ];
 
     /**
@@ -52,4 +53,36 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * CSVヘッダ項目の定義値があれば定義配列のkeyを返す   
+     *
+     * @param string $header
+     * @param string $encoding
+     * @return string|null
+     */
+    public static function retrieveUserColumnsByValue(string $header ,string $encoding)
+    {
+      // CSVヘッダとテーブルのカラムを関連付けておく
+      $list = [
+        'name' => '名前',
+        'email' => 'メールアドレス',
+        'belong' => '所属',
+        'number' => '社員番号',
+        'card_number' => 'カード番号',
+        'basic_work_time' => '基本勤務時間',
+        'designate_start_time' => '指定勤務開始時間',
+        'designate_end_time' => '指定勤務終了時間',
+        'superior_flg' => '上長フラグ',
+        'admin_flg' => '管理者フラグ',
+        'password' => 'パスワード',
+      ];
+
+      foreach ($list as $key => $value) {
+        if ($header === mb_convert_encoding($value, $encoding)) {
+          return $key;
+        }
+      }
+      return null;
+    }
 }

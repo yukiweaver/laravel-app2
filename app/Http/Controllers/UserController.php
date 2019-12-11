@@ -202,13 +202,6 @@ class UserController extends Controller
     
     $workingUsers = [];
     foreach ($users as $user) {
-      // $dbParams = [
-      //   'user_id' => $user->id,
-      //   'attendance_day' => $today,
-      //   'end_time' => null,
-      // ];
-      // ↓ なぜか取れない 
-      // $attendance = Attendance::whereRaw('user_id = :user_id and attendance_day = :attendance_day and end_time = :end_time', $dbParams)->first();
       $attendance = Attendance::getTodayData($user->id, $today);
       if (is_null($attendance)) {
         continue;
@@ -239,13 +232,19 @@ class UserController extends Controller
   /**
    * CSVインポート完了アクション
    */
-  public function importUsersComplete(Request $request)
+  public function importUsersComplete(UserRequest $request)
   {
     $flgData = $request->flg_data; // middleware
     // admin以外は不可
     if (!$flgData['admin_flg']) {
       return redirect('/show');
     }
+
+    $csvFile = $request->file('csv_file')->store('csv'); // stroge/app/csvに保存
+
+    $fp = fopen(storage_path('app/') . $csvFile, 'r');
+
+    $headers = fgetcsv($fp);
     $viewParams = [];
     return view('user.import_users_complete', $viewParams);
   }

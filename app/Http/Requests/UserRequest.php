@@ -44,6 +44,11 @@ class UserRequest extends FormRequest
           unset($rules['password_confirmation']);
         }
 
+        if ($this->csv_file) {
+          $rules = [];
+          $rules['csv_file'] = 'required|max:1024|file|mimes:csv,txt|mimetypes:text/plain';
+        }
+
         return $rules;
     }
 }
