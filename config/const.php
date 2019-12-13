@@ -6,6 +6,7 @@ return array(
   'ERR_EDIT_AFTER_TOMORROW' => '明日以降は編集できません。',
   'ERR_INVALID_DATA' => '編集内容が不正です。',
   'ERR_UPDATE' => '更新に失敗しました。',
+  'ERR_CSV_IMPORT' => '登録に失敗しました。CSVファイルのフォーマットが正しいことを確認してださい。',
   'SUCCESS_REGIST_START_TIME' => '出社時間を登録しました。',
   'SUCCESS_REGIST_END_TIME' => '退社時間を登録しました。',
   'SUCCESS_REGIST_ATTENDANCE_DATA' => '勤怠データを更新しました。',

@@ -61,7 +61,7 @@ class User extends Authenticatable
      * @param string $encoding
      * @return string|null
      */
-    public static function retrieveUserColumnsByValue(string $header ,string $encoding)
+    public static function retrieveUserColumnsByValue(string $header , $encoding=null)
     {
       // CSVヘッダとテーブルのカラムを関連付けておく
       $list = [
@@ -79,7 +79,12 @@ class User extends Authenticatable
       ];
 
       foreach ($list as $key => $value) {
-        if ($header === mb_convert_encoding($value, $encoding)) {
+        if ($encoding) {
+          if ($header === mb_convert_encoding($value, $encoding)) {
+            return $key;
+          }
+        }
+        if ($header === $value) {
           return $key;
         }
       }

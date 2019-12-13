@@ -46,7 +46,7 @@ class UserRequest extends FormRequest
 
         if ($this->csv_file) {
           $rules = [];
-          $rules['csv_file'] = 'required|max:1024|file|mimes:csv,txt|mimetypes:text/plain';
+          $rules['csv_file'] = 'required|file|mimetypes:text/plain|mimes:csv,txt';
         }
 
         return $rules;

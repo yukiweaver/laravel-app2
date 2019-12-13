@@ -17,7 +17,7 @@
                   </div>
                   @endif
                   <div class="csv_import">
-                    <form action="{{ route('import_users_complete') }}" method="post">
+                    <form action="{{ route('import_users_complete') }}" method="post" enctype="multipart/form-data">
                       @csrf
                       <input type="file" name="csv_file" class="form-control">
                       <input type="submit" class="btn btn-primary" value="CSVインポート">

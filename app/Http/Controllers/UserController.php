@@ -11,6 +11,7 @@ use App\Attendance;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 use Hash;
 
 class UserController extends Controller
@@ -244,7 +245,29 @@ class UserController extends Controller
 
     $fp = fopen(storage_path('app/') . $csvFile, 'r');
 
+    // 1行目（ヘッダ）読み込み
     $headers = fgetcsv($fp);
+
+    $columnsName = [];
+
+    // CSVヘッダ確認
+    foreach ($headers as $header) {
+      $result = User::retrieveUserColumnsByValue($header);
+      // dd($result);
+      if (is_null($result)) {
+        fclose($fp);
+        Storage::delete($csvFile);
+        return redirect(route('import_users_input'))->with('error_message', config('const.ERR_CSV_IMPORT'));
+      }
+      $columnsName[] = $result;
+    }
+    
+    // 1行ずつ読み込む（ヘッダを除く2行目から）
+    while($row = fgetcsv($fp)) {
+      var_dump($row);
+    }
+    exit;
+
     $viewParams = [];
     return view('user.import_users_complete', $viewParams);
   }
