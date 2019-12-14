@@ -253,7 +253,6 @@ class UserController extends Controller
     // CSVヘッダ確認
     foreach ($headers as $header) {
       $result = User::retrieveUserColumnsByValue($header);
-      // dd($result);
       if (is_null($result)) {
         fclose($fp);
         Storage::delete($csvFile);
@@ -263,10 +262,35 @@ class UserController extends Controller
     }
     
     // 1行ずつ読み込む（ヘッダを除く2行目から）
-    while($row = fgetcsv($fp)) {
-      var_dump($row);
+    $importErrors = [];
+    $i = 0;
+    $successFlg = true;
+    $duplicateFlg = false;
+    $rows = [];
+    while ($row = fgetcsv($fp)) {
+      $rows[] = $row;
     }
-    exit;
+    $data = [];
+    foreach ($rows as $key => $val) {
+
+      $arr = [];
+      
+      foreach ($val as $k => $v) {
+        $arr = $this->csvData($arr, $k, $v);
+      }
+      // dd($arr);
+      $validator = $this->csvImportValidator($arr);
+      // バリデーション
+      if ($validator->fails()) {
+        $importErrors[$i+2] = $validator->errors()->all(); // 何行目かを出すために+2している
+        dd($importErrors);
+        $successFlg = false;
+        continue;
+      }
+
+      $data[] = $arr;
+    }
+    
 
     $viewParams = [];
     return view('user.import_users_complete', $viewParams);
@@ -287,5 +311,70 @@ class UserController extends Controller
       'current_day' => 'date',
     ]);
     return $validator;
+  }
+
+  /**
+   * バリデーションの定義（csvインポート用）
+   *
+   * @return array
+   */
+  private function csvImportValidator(array $data)
+  {
+    $validator = Validator::make($data, [
+      'name'                      => 'required|string|max:255',
+      'email'                     => 'required|string|unique:users|max:255|email:rfc',
+      'belong'                    => 'required|string|max:255',
+      'number'                    => 'nullable|string|max:255',
+      'card_number'               => 'nullable|string|max:255',
+      'basic_work_time'           => 'required|string|timezone',
+      'designate_start_time'      => 'required|string',
+      'designate_end_time'        => 'required|string',
+      'superior_flg'              => 'required|boolean',
+      'admin_flg'                 => 'required|boolean',
+      'password'                  => 'required|string|min:8|regex:/^[a-zA-Z0-9-]+$/',
+    ]);
+    return $validator;
+  }
+
+  private function csvData(array $arr, string $k, string $v)
+  {
+    switch ($k) {
+      case 0:
+        $arr['name'] = $v;
+        break;
+      case 1:
+        $arr['email'] = $v;
+        break;
+      case 2:
+        $arr['belong'] = $v;
+        break;
+      case 3:
+        $arr['number'] = $v;
+        break;
+      case 4:
+        $arr['card_number'] = $v;
+        break;
+      case 5:
+        $arr['basic_work_time'] = $v;
+        break;
+      case 6:
+        $arr['designate_start_time'] = $v;
+        break;
+      case 7:
+        $arr['designate_end_time'] = $v;
+        break;
+      case 8:
+        $arr['superior_flg'] = $v;
+        break;
+      case 9:
+        $arr['admin_flg'] = $v;
+        break;
+      case 10:
+        $arr['password'] = $v;
+        break;
+      default:
+        break;
+    }
+    return $arr;
   }
 }
