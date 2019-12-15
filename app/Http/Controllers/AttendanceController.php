@@ -7,10 +7,12 @@ use App\HTTP\Requests\AttendanceRequest;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Attendance;
+use App\User;
 use Illuminate\Support\Facades\Config;
 use Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendanceController extends Controller
 {
@@ -30,6 +32,11 @@ class AttendanceController extends Controller
    */
   public function startTime(Request $request)
   {
+    $flgData = $request->flg_data;
+    // adminは不可
+    if ($flgData['admin_flg']) {
+      return redirect('/index');
+    }
     $user = auth()->user();
     $userId = $user->id;
     $today = Carbon::today();
@@ -62,6 +69,11 @@ class AttendanceController extends Controller
    */
   public function endTime(Request $request)
   {
+    $flgData = $request->flg_data;
+    // adminは不可
+    if ($flgData['admin_flg']) {
+      return redirect('/index');
+    }
     $user = auth()->user();
     $userId = $user->id;
     $today = Carbon::today();
@@ -94,6 +106,11 @@ class AttendanceController extends Controller
    */
   public function edit(Request $request)
   {
+    $flgData = $request->flg_data;
+    // adminは不可
+    if ($flgData['admin_flg']) {
+      return redirect('/index');
+    }
     $user = auth()->user();
     $userId = $user->id;
 
@@ -130,6 +147,11 @@ class AttendanceController extends Controller
    */
   public function update(AttendanceRequest $request)
   {
+    $flgData = $request->flg_data;
+    // adminは不可
+    if ($flgData['admin_flg']) {
+      return redirect('/index');
+    }
     $user = auth()->user();
     $userId = $user->id;
     $today = Carbon::today();
@@ -188,6 +210,50 @@ class AttendanceController extends Controller
     }
 
     return redirect("/show?current_day=$currentDay")->with('flash_message', config('const.SUCCESS_REGIST_ATTENDANCE_DATA'));
+  }
+
+  /**
+   * CSVダウンロードアクション
+   */
+  public function downloadData(Request $request)
+  {
+    $flgData = $request->flg_data;
+    // adminは不可
+    if ($flgData['admin_flg']) {
+      return redirect('/index');
+    }
+
+    $currentDay = Carbon::parse($request->input('current_day'));
+    $firstDay = $currentDay->copy()->firstOfMonth(); // 月初
+    $lastDay = $firstDay->copy()->endOfMonth(); // 月末
+    $attendances = Attendance::getOneMonthData($firstDay, $lastDay);
+    
+    $response = new StreamedResponse (function() use ($request, $attendances) {
+
+      $stream = fopen('php://output', 'w');
+
+      //　文字化け回避
+      // stream_filter_prepend($stream,'convert.iconv.utf-8/cp932//TRANSLIT');
+
+      // タイトルを追加
+      fputcsv($stream, config('const.CSV_DL_HEADER'));
+
+      foreach ($attendances as $attendance) {
+        $attendanceDay = $attendance->attendance_day;
+        $startTime = $attendance->start_time ? Carbon::parse($attendance->start_time)->format('H:i') : '';
+        $endTime = $attendance->end_time ? Carbon::parse($attendance->end_time)->format('H:i') : '';
+        $note = $attendance->note;
+        fputcsv($stream, [$attendanceDay, $startTime, $endTime, $note]);
+      }
+      fclose($stream);
+    });
+    
+    $date = $currentDay->format('Y-m');
+
+    $response->headers->set('Content-Type', 'application/octet-stream');
+    $response->headers->set('Content-Disposition', "attachment; filename=$date.csv");
+
+    return $response;
   }
 
   // private

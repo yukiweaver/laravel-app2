@@ -48,7 +48,11 @@
 
                     <div class="btn-group">
                       <a href="/attendance/edit?current_day={{$currentDay}}" class="btn btn-primary">勤怠編集</a>
-                      <a href="" class="btn btn-primary">CSV出力</a>
+                      <form name="csv_download" action="{{route('download_data')}}" method="post">
+                        @csrf
+                        <input type="hidden" name="current_day" value="{{$currentDay}}">
+                        <a href="javascript:csv_download.submit()" class="btn btn-primary">CSV出力</a>
+                      </form>
                       <a href="" class="btn btn-primary">勤怠ログ（承認済み）</a>
                     </div>
 

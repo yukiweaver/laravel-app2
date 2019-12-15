@@ -11,4 +11,10 @@ return array(
   'SUCCESS_REGIST_END_TIME' => '退社時間を登録しました。',
   'SUCCESS_REGIST_ATTENDANCE_DATA' => '勤怠データを更新しました。',
   'SUCCESS_UPDATE' => '更新しました。',
+  'CSV_DL_HEADER' => [
+    '日付',
+    '出勤時間',
+    '退勤時間',
+    '備考',
+  ],
 );

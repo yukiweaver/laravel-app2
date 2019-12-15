@@ -263,10 +263,9 @@ class UserController extends Controller
     
     // 1行ずつ読み込む（ヘッダを除く2行目から）
     $importErrors = [];
+    $rows = [];
     $i = 0;
     $successFlg = true;
-    $duplicateFlg = false;
-    $rows = [];
     while ($row = fgetcsv($fp)) {
       $rows[] = $row;
     }
@@ -278,22 +277,32 @@ class UserController extends Controller
       foreach ($val as $k => $v) {
         $arr = $this->csvData($arr, $k, $v);
       }
-      // dd($arr);
       $validator = $this->csvImportValidator($arr);
       // バリデーション
       if ($validator->fails()) {
         $importErrors[$i+2] = $validator->errors()->all(); // 何行目かを出すために+2している
-        dd($importErrors);
         $successFlg = false;
-        continue;
       }
 
+      $i++;
+      $arr['password'] = Hash::make($arr['password']);
+      $arr['created_at'] = Carbon::now();
+      $arr['updated_at'] = Carbon::now();
       $data[] = $arr;
     }
-    
 
-    $viewParams = [];
+    $viewParams = [
+      'importErrors' => $importErrors,
+    ];
+    
+    if ($successFlg) {
+      // DB一括登録
+      $isResult = User::bulkUserRegist($data);
+      $viewParams['isResult'] = $isResult;
+    }
+
     return view('user.import_users_complete', $viewParams);
+
   }
 
 
@@ -326,7 +335,7 @@ class UserController extends Controller
       'belong'                    => 'required|string|max:255',
       'number'                    => 'nullable|string|max:255',
       'card_number'               => 'nullable|string|max:255',
-      'basic_work_time'           => 'required|string|timezone',
+      'basic_work_time'           => 'required|string',
       'designate_start_time'      => 'required|string',
       'designate_end_time'        => 'required|string',
       'superior_flg'              => 'required|boolean',

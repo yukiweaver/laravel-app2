@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -89,5 +90,28 @@ class User extends Authenticatable
         }
       }
       return null;
+    }
+
+    /**
+     * ユーザ一括登録
+     * @param array $data
+     * @return bool
+     */
+    public static function bulkUserRegist(array $data)
+    {
+      DB::beginTransaction();
+      try {
+        User::insert($data);
+        DB::commit();
+        return true;
+      } catch (PDOException $e) {
+        DB::rollback();
+        Log::error(get_class() . ':bulkUserRegist() PDOException Error. Rollback was executed');
+        return false;
+      } catch (Exception $e) {
+        DB::rollback();
+        Log::error(get_class() . ':bulkUserRegist() Exception Error. Rollback was executed');
+        return false;
+      }
     }
 }

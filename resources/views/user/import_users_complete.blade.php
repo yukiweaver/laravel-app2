@@ -7,17 +7,27 @@
             <div class="card">
                 <div class="card-body">
                   <h2>CSVインポート - 完了</h2>
-                  @if (count($errors) > 0)
-                  <div class="errors">
-                    <ul>
-                      @foreach ($errors->all() as $error)
-                        <li>{{$error}}</li>
-                      @endforeach
-                    </ul>
-                  </div>
-                  @endif
                   <div class="csv_import">
-                    test
+                    @if (count($importErrors) > 0)
+                    <div class="errors">
+                      <h4>以下のエラーが発生しました。登録処理は全て無効です。</h4>
+                      <ul>
+                        @foreach ($importErrors as $line => $val)
+                          @foreach ($val as $error)
+                            <li>{{$line}}行目：{{$error}}</li>
+                          @endforeach
+                        @endforeach
+                      </ul>
+                    </div>
+                    @else
+                      @if ($isResult)
+                        <h4>登録が完了しました。</h4>
+                      @else
+                        <div class="errors">
+                          <h4>DBエラーが発生しました。登録処理は全て無効です。</h4>
+                        </div>
+                      @endif
+                    @endif
                   </div>
                 </div>
             </div>
