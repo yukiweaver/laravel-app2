@@ -8,3 +8,11 @@
   background-color: #eaeaea;
   padding: 20px;
 }
+
+.modal-header-r {
+  display: initial;
+}
+
+.modal-dialog-r {
+  max-width: 750px;
+}

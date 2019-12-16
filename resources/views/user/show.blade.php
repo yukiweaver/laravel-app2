@@ -86,7 +86,7 @@
                         @foreach ($date as $d)
                         <tr>
                         <!-- 残業申請 -->
-                          <td><a href="#" class="btn btn-primary">残業申請</a></td>
+                          <td><a href="#" class="btn btn-primary" data-toggle="modal" data-target="#a{{$d->id}}">残業申請</a></td>
                         <!-- 日付 -->
                           <td>{{$d->attendance_day->format('m/d')}}</td>
                         <!-- 曜日 -->
@@ -152,6 +152,7 @@
                         <!-- 指示者確認 -->
                           <td></td>
                         </tr>
+                        {{-- @include('partials.overtime', ['d' => $d]) --}}
                         @endforeach
                         <td colspan="2">
                           総合勤務時間：
@@ -193,4 +194,7 @@
         </div>
     </div>
 </div>
+@foreach ($date as $date)
+@include('partials.overtime', ['d' => $date])
+@endforeach
 @endsection
