@@ -20,6 +20,14 @@ class User extends Authenticatable
     }
 
     /**
+     * ユーザーの残業データを取得
+     */
+    public function overworks()
+    {
+      return $this->hasMany('App\Overwork');
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

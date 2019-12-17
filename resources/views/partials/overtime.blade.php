@@ -32,7 +32,7 @@
                 </td>
                 <!-- 翌日 -->
                 <td>
-                  <input type="checkbox" name="next_day" value="" class="form-control">
+                  <input type="checkbox" name="is_next_day" value="" class="form-control">
                 </td>
                 <!-- 業務処理内容 -->
                 <td>
