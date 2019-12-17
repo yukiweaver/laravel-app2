@@ -195,6 +195,6 @@
     </div>
 </div>
 @foreach ($date as $date)
-@include('partials.overtime', ['d' => $date])
+  @include('partials.overtime', ['d' => $date])
 @endforeach
 @endsection

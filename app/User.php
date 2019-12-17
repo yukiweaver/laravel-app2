@@ -114,4 +114,18 @@ class User extends Authenticatable
         return false;
       }
     }
+
+    /**
+     * 上長ユーザ取得
+     */
+    public static function getSuperiorUsers($superiorFlg)
+    {
+      $userId = auth()->user()->id;
+      if ($superiorFlg) {
+        $superiors = User::where('superior_flg', true)->whereNotIn('id', [$userId])->get();
+      } else {
+        $superiors = User::where('superior_flg', true)->get();
+      }
+      return $superiors;
+    }
 }

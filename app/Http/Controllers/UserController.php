@@ -74,7 +74,8 @@ class UserController extends Controller
     $lastMonth = $currentDay->copy()->subMonthNoOverflow()->format('Y-m-d'); // １ヶ月前の日付
     $nextMonth = $currentDay->copy()->addMonthNoOverflow()->format('Y-m-d'); // １ヶ月後の日付
     $week = ['日', '月', '火', '水', '木', '金', '土'];
-
+    $superiors = User::getSuperiorUsers($user->superior_flg);
+    
     $dbParams = [];
     for ($i = 0; true; $i++) {
         $day = $firstDay->addDays($i);
@@ -120,18 +121,19 @@ class UserController extends Controller
     $totalWorkingHours = timeTenDiv($user->basic_work_time) * $attendanceDays; // 総合勤務時間
     
     $viewParams = [
-      'user' => $user,
-      'date' => $date,
-      'week' => $week,
-      'lastMonth' => $lastMonth,
-      'nextMonth' => $nextMonth,
-      'firstDay' => $firstDay,
-      'lastDay' => $lastDay,
-      'today' => $today,
-      'currentDay' => $currentDay->format('Y-m-d'),
-      'attendanceDays' => $attendanceDays,
-      'totalWorkingTime' => $totalWorkingTime,
-      'totalWorkingHours' => $totalWorkingHours,
+      'user'                  => $user,
+      'date'                  => $date,
+      'week'                  => $week,
+      'lastMonth'             => $lastMonth,
+      'nextMonth'             => $nextMonth,
+      'firstDay'              => $firstDay,
+      'lastDay'               => $lastDay,
+      'today'                 => $today,
+      'currentDay'            => $currentDay->format('Y-m-d'),
+      'attendanceDays'        => $attendanceDays,
+      'totalWorkingTime'      => $totalWorkingTime,
+      'totalWorkingHours'     => $totalWorkingHours,
+      'superiors'             => $superiors,
     ];
     return view('user.show', $viewParams);
   }
