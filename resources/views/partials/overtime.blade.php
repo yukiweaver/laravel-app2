@@ -7,8 +7,9 @@
         <h4 class="modal-title">残業申請</h4>
       </div>
       <div class="modal-body">
-        <form action="#" method="post">
+        <form action="{{route('overtime')}}" method="post">
           @csrf
+          <input type="hidden" name="attendance_id" value="{{$d->id}}">
           <table class="txt1 table table-bordered table-striped table-condensed">
             <thead>
               <tr>
@@ -32,7 +33,8 @@
                 </td>
                 <!-- 翌日 -->
                 <td>
-                  <input type="checkbox" name="is_next_day" value="" class="form-control">
+                  <input type="hidden" name="is_next_day" value="0">
+                  <input type="checkbox" name="is_next_day" value="1" class="form-control">
                 </td>
                 <!-- 業務処理内容 -->
                 <td>
@@ -50,11 +52,11 @@
               </tr>
             </tbody>
           </table>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+            <input type="submit" class="btn btn-primary" value="申請する">
+          </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-        <button type="button" class="btn btn-primary">申請する</button>
       </div>
     </div>
   </div>

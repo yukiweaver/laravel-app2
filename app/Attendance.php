@@ -55,4 +55,13 @@ class Attendance extends Model
       $attendance = self::where('attendance_day', $today)->where('user_id', $userId)->where('end_time', null)->whereNotNull('start_time')->first();
       return $attendance;
     }
+
+    /**
+     * ユーザidと勤怠idをキーにして、勤怠データを取得
+     */
+    public static function getAttendance($attendanceId)
+    {
+      $attendance = self::where('user_id', auth()->user()->id)->where('id', $attendanceId)->first();
+      return $attendance;
+    }
 }

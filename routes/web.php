@@ -35,5 +35,6 @@ Route::group(['middleware' => 'admin'], function() {
   Route::get('/import_users_input', 'UserController@importUsersInput')->name('import_users_input');
   Route::post('/import_users_complete', 'UserController@importUsersComplete')->name('import_users_complete');
   Route::post('attendance/download_data', 'AttendanceController@downloadData')->name('download_data');
+  Route::post('overwork/overtime', 'OverworkController@overtimeApplication')->name('overtime');
 });
 
