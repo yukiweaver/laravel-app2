@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\HTTP\Requests\OverworkRequest;
 use App\Attendance;
 use App\User;
+use App\Overwork;
 use Carbon\Carbon;
 
 class OverworkController extends Controller
@@ -42,6 +43,17 @@ class OverworkController extends Controller
     $params['attendance_day'] = $attendanceDay;
     $params['scheduled_end_time'] = $scheduledEndTime;
     $params['user_id'] = $userId;
-    dd($params);
+    $params['apply_overtime_status'] = '1';
+    
+    // レコードが存在しないならINSERT、存在するならUPDATE
+    $overwork = Overwork::findLikeAttendanceDay($attendanceDay);
+    if (is_null($overwork)) {
+      $overwork = new Overwork;
+    }
+    if ($overwork->fill($params)->save()) {
+      return redirect("/show")->with('flash_message', config('const.SUCCESS_APPLY_OVERTIME'));
+    } else {
+      return redirect("/show")->with('error_message', config('const.ERR_APPLY_OVERTIME'));
+    }
   }
 }
