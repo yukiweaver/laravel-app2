@@ -25,7 +25,7 @@ class OverworkController extends Controller
   /**
    * 残業申請アクション
    */
-  public function overtimeApplication(Request $request)
+  public function overtimeApplication(OverworkRequest $request)
   {
     $flgData = $request->flg_data;
     // adminは不可

@@ -23,7 +23,13 @@ class OverworkRequest extends FormRequest
      */
     public function rules()
     {
-      $rules = [];
+      $rules = [
+        'attendance_id'         => 'required|integer',
+        'scheduled_end_time'    => 'required|string',
+        'is_next_day'           => 'required|boolean',
+        'business_description'  => 'nullable|string|max:255',
+        'instructor_id'         => 'required|integer',
+      ];
 
       return $rules;
     }

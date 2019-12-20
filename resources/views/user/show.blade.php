@@ -6,11 +6,15 @@
         <div class="col-md-16">
             <div class="card">
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+                  @if (count($errors) > 0)
+                  <div class="errors">
+                    <ul>
+                      @foreach ($errors->all() as $error)
+                        <li>{{$error}}</li>
+                      @endforeach
+                    </ul>
+                  </div>
+                  @endif
 
                     <table class="table table-bordered table-striped table-condensed">
                       <thead>
