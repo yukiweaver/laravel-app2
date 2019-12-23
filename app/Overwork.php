@@ -15,6 +15,14 @@ class Overwork extends Model
   }
 
   /**
+   * 残業データに紐づく勤怠データ取得
+   */
+  public function attendance()
+  {
+    return $this->belongsTo('App\Attendance');
+  }
+
+  /**
    * The attributes that are mass assignable.
    *
    * @var array
