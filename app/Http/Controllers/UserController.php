@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Carbon\Carbon;
 use App\Attendance;
+use App\Overwork;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -116,6 +117,11 @@ class UserController extends Controller
       if ($d->start_time !== null && $d->end_time !== null) {
         $totalWorkingTime += $d->start_time->diffInSeconds($d->end_time);
       }
+      $overwork = $d->overwork()->first();
+      $d->scheduled_end_time = $overwork ? Carbon::parse($overwork->scheduled_end_time) : null;
+      $d->business_description = $overwork ? $overwork->business_description : null;
+      $d->apply_overtime_status = $overwork ? $overwork->apply_overtime_status : null;
+      $d->instructor = $overwork ? User::find($overwork->instructor_id)->name : null;
     }
     $totalWorkingTime = calculation($totalWorkingTime);
     $totalWorkingHours = timeTenDiv($user->basic_work_time) * $attendanceDays; // 総合勤務時間

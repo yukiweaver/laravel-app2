@@ -29,6 +29,7 @@ class Overwork extends Model
    */
   protected $fillable = [
     'user_id',
+    'attendance_id',
     'scheduled_end_time', 
     'is_next_day', 
     'business_description',

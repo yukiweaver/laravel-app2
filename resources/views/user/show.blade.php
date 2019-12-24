@@ -146,15 +146,31 @@
                         <!-- 備考 -->
                           <td>{{$d->note}}</td>
                         <!-- 終了予定時間（hours）-->
-                          <td></td>
+                          <td>
+                            @if ($d->scheduled_end_time !== null)
+                                {{$d->scheduled_end_time->format('H')}}
+                            @endif
+                          </td>
                         <!-- 終了予定時間（minites）-->
-                          <td></td>
+                          <td>
+                            @if ($d->scheduled_end_time !== null)
+                                {{$d->scheduled_end_time->format('i')}}
+                            @endif
+                          </td>
                         <!-- 時間外時間 -->
                           <td></td>
                         <!-- 業務処理内容-->
-                          <td></td>
+                          <td>{{$d->business_description}}</td>
                         <!-- 指示者確認 -->
-                          <td></td>
+                          <td>
+                            @if ($d->apply_overtime_status == 1)
+                              {{$d->instructor}}に申請中
+                            @elseif ($d->apply_overtime_status == 2)
+                              {{$d->instructor}}から承認
+                            @elseif($d->apply_overtime_status == 3)
+                              {{$d->instructor}}から否認
+                            @endif
+                          </td>
                         </tr>
                         {{-- @include('partials.overtime', ['d' => $d]) --}}
                         @endforeach
