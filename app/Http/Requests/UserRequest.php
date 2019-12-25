@@ -24,16 +24,16 @@ class UserRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email:rfc',
-            'belong' => 'required|string|max:255',
-            'password' => 'required|string|min:8',
-            'password_confirmation' => 'required|same:password',
-            'number' => 'nullable|string|max:255',
-            'card_number' => 'nullable|string|max:255',
-            'basic_work_time' => 'nullable|string',
-            'designate_start_time' => 'nullable|string',
-            'designate_end_time' => 'nullable|string',
+            'name'                    => 'required|string|max:255',
+            'email'                   => 'required|string|max:255|email:rfc',
+            'belong'                  => 'required|string|max:255',
+            'password'                => 'required|string|min:8',
+            'password_confirmation'   => 'required|same:password',
+            'number'                  => 'nullable|string|max:255',
+            'card_number'             => 'nullable|string|max:255',
+            'basic_work_time'         => 'nullable|string',
+            'designate_start_time'    => 'nullable|string',
+            'designate_end_time'      => 'nullable|string',
         ];
 
         // 入力フィールドが存在しない、or値が空ならバリデーションから除外

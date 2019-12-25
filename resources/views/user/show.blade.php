@@ -158,7 +158,11 @@
                             @endif
                           </td>
                         <!-- 時間外時間 -->
-                          <td></td>
+                          <td>
+                            @if ($d->scheduled_end_time !== null)
+                                {{overtimeCalculation($d->is_next_day, $d->scheduled_end_time, $designateEndTime)}}
+                            @endif
+                          </td>
                         <!-- 業務処理内容-->
                           <td>{{$d->business_description}}</td>
                         <!-- 指示者確認 -->

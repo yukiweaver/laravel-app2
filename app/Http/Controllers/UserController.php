@@ -122,6 +122,7 @@ class UserController extends Controller
       $d->business_description = $overwork ? $overwork->business_description : null;
       $d->apply_overtime_status = $overwork ? $overwork->apply_overtime_status : null;
       $d->instructor = $overwork ? User::find($overwork->instructor_id)->name : null;
+      $d->is_next_day = $overwork ? $overwork->is_next_day : null;
     }
     $totalWorkingTime = calculation($totalWorkingTime);
     $totalWorkingHours = timeTenDiv($user->basic_work_time) * $attendanceDays; // 総合勤務時間
@@ -140,6 +141,7 @@ class UserController extends Controller
       'totalWorkingTime'      => $totalWorkingTime,
       'totalWorkingHours'     => $totalWorkingHours,
       'superiors'             => $superiors,
+      'designateEndTime'      => Carbon::parse($currentDay->format('Y-m-d') . $user->designate_end_time),
     ];
     return view('user.show', $viewParams);
   }
