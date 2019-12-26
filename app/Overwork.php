@@ -49,4 +49,14 @@ class Overwork extends Model
     }
     return $overwork;
   }
+
+  /**
+   * ログインしている上長に申請されている残業申請の数をカウント
+   */
+  public static function countOverwork()
+  {
+    $userId = auth()->user()->id;
+    $count = self::where('instructor_id', $userId)->where('apply_overtime_status', '1')->count();
+    return $count;
+  }
 }

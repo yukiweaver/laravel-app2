@@ -50,6 +50,25 @@
                       </thead>
                     </table>
 
+                    @if ($user->superior_flg)
+                    <div class="notification-group">
+                      <p>
+                        【所属長承認申請のお知らせ】
+                        <a class="notification" href="#">##件の通知があります</a>
+                      </p>
+                      <p>
+                        【勤怠変更申請のお知らせ】
+                        <a class="notification" href="#">##件の通知があります</a>
+                      </p>
+                      <p>
+                        【残業申請のお知らせ】
+                        @if ($overWorkCount > 0)
+                          <a class="notification" href="#" style="color: red;">{{$overWorkCount}}件の通知があります</a>
+                        @endif
+                      </p>
+                    </div>
+                    @endif
+
                     <div class="btn-group">
                       <a href="/attendance/edit?current_day={{$currentDay}}" class="btn btn-primary">勤怠編集</a>
                       <form name="csv_download" action="{{route('download_data')}}" method="post">

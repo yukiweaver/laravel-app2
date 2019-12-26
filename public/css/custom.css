@@ -16,3 +16,7 @@
 .modal-dialog-r {
   max-width: 750px;
 }
+
+.notification {
+  color: red;
+}

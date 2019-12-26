@@ -76,6 +76,7 @@ class UserController extends Controller
     $nextMonth = $currentDay->copy()->addMonthNoOverflow()->format('Y-m-d'); // １ヶ月後の日付
     $week = ['日', '月', '火', '水', '木', '金', '土'];
     $superiors = User::getSuperiorUsers($user->superior_flg);
+    $overworkCount = Overwork::countOverwork();
     
     $dbParams = [];
     for ($i = 0; true; $i++) {
@@ -142,6 +143,7 @@ class UserController extends Controller
       'totalWorkingHours'     => $totalWorkingHours,
       'superiors'             => $superiors,
       'designateEndTime'      => Carbon::parse($currentDay->format('Y-m-d') . $user->designate_end_time),
+      'overWorkCount'         => $overworkCount,
     ];
     return view('user.show', $viewParams);
   }
