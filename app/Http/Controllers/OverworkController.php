@@ -44,6 +44,7 @@ class OverworkController extends Controller
     $params['scheduled_end_time'] = $scheduledEndTime;
     $params['user_id'] = $userId;
     $params['apply_overtime_status'] = '1';
+    $params['attendance_day'] = $attendanceDay;
     
     // レコードが存在しないならINSERT、存在するならUPDATE
     $overwork = Overwork::findLikeAttendanceDay($attendanceDay);

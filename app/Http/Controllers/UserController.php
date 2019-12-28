@@ -77,6 +77,7 @@ class UserController extends Controller
     $week = ['日', '月', '火', '水', '木', '金', '土'];
     $superiors = User::getSuperiorUsers($user->superior_flg);
     $overworkCount = Overwork::countOverwork();
+    $approvalOverwork = Overwork::findApprovalOverwork();
     
     $dbParams = [];
     for ($i = 0; true; $i++) {
@@ -127,6 +128,14 @@ class UserController extends Controller
     }
     $totalWorkingTime = calculation($totalWorkingTime);
     $totalWorkingHours = timeTenDiv($user->basic_work_time) * $attendanceDays; // 総合勤務時間
+
+    if ($approvalOverwork->isNotEmpty()) {
+      foreach ($approvalOverwork as $val) {
+        $val->designate_end_time = Carbon::parse($val->attendance_day . $val->user->designate_end_time);
+        $val->attendance_day = Carbon::parse($val->attendance_day);
+        $val->scheduled_end_time = Carbon::parse($val->scheduled_end_time);
+      }
+    }
     
     $viewParams = [
       'user'                  => $user,
@@ -144,6 +153,7 @@ class UserController extends Controller
       'superiors'             => $superiors,
       'designateEndTime'      => Carbon::parse($currentDay->format('Y-m-d') . $user->designate_end_time),
       'overWorkCount'         => $overworkCount,
+      'approvalOverwork'      => $approvalOverwork,
     ];
     return view('user.show', $viewParams);
   }

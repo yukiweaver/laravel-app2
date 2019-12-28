@@ -63,7 +63,7 @@
                       <p>
                         【残業申請のお知らせ】
                         @if ($overWorkCount > 0)
-                          <a class="notification" href="#" style="color: red;">{{$overWorkCount}}件の通知があります</a>
+                          <a class="notification" href="#" data-toggle="modal" data-target="#aa">{{$overWorkCount}}件の通知があります</a>
                         @endif
                       </p>
                     </div>
@@ -237,7 +237,8 @@
         </div>
     </div>
 </div>
-@foreach ($date as $date)
-  @include('partials.overtime', ['d' => $date])
+@foreach ($date as $d)
+  @include('partials.overtime')
 @endforeach
+@include('partials.overtime_approval')
 @endsection

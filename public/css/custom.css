@@ -17,6 +17,10 @@
   max-width: 750px;
 }
 
+.modal-header-a {
+  max-width: 950px;
+}
+
 .notification {
   color: red;
 }

@@ -29,16 +29,20 @@
                 <td>{{$week[$d->attendance_day->dayOfWeek]}}</td>
                 <!-- 終了予定時間 -->
                 <td>
+                  @if ($d->scheduled_end_time == null)
                   <input type="time" name="scheduled_end_time" value="" class="form-control">
+                  @else
+                  <input type="time" name="scheduled_end_time" value="{{$d->scheduled_end_time->format('H:i')}}" class="form-control">
+                  @endif
                 </td>
                 <!-- 翌日 -->
                 <td>
                   <input type="hidden" name="is_next_day" value="0">
-                  <input type="checkbox" name="is_next_day" value="1" class="form-control">
+                  <input type="checkbox" name="is_next_day" value="1" @if ($d->is_next_day) checked @endif class="form-control">
                 </td>
                 <!-- 業務処理内容 -->
                 <td>
-                  <input type="text" name="business_description" value="" class="form-control">
+                  <input type="text" name="business_description" value="{{$d->business_description}}" class="form-control">
                 </td>
                 <!-- 指示者確認 -->
                 <td>
