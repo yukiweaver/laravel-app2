@@ -28,6 +28,14 @@ class User extends Authenticatable
     }
 
     /**
+     * ユーザーの月勤怠データを取得
+     */
+    public function oneMonthAttendances()
+    {
+      return $this->hasMany('App\OneMonthAttendance');
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -42,7 +50,6 @@ class User extends Authenticatable
         'basic_work_time',
         'number',
         'card_number',
-        'csv_file',
     ];
 
     /**

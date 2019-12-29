@@ -242,9 +242,10 @@
                           @if (isCurrentUser($user->id))
                           <form action="#" method="post">
                             <select name="one_month_attendance" class="form-control">
-                              <option value=""></option>
-                              <option value="1">上長A</option>
-                              <option value="2">上長B</option>
+                              <option value="">選択してください</option>
+                              @foreach ($superiors as $superior)
+                              <option value="{{$superior->id}}">{{$superior->name}}</option>
+                              @endforeach
                             </select><br>
                             <input type="submit" class="btn btn-primary" value="申請する">
                           </form>
