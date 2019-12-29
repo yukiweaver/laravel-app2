@@ -74,17 +74,17 @@ class User extends Authenticatable
     {
       // CSVヘッダとテーブルのカラムを関連付けておく
       $list = [
-        'name' => '名前',
-        'email' => 'メールアドレス',
-        'belong' => '所属',
-        'number' => '社員番号',
-        'card_number' => 'カード番号',
-        'basic_work_time' => '基本勤務時間',
-        'designate_start_time' => '指定勤務開始時間',
-        'designate_end_time' => '指定勤務終了時間',
-        'superior_flg' => '上長フラグ',
-        'admin_flg' => '管理者フラグ',
-        'password' => 'パスワード',
+        'name'                  => '名前',
+        'email'                 => 'メールアドレス',
+        'belong'                => '所属',
+        'number'                => '社員番号',
+        'card_number'           => 'カード番号',
+        'basic_work_time'       => '基本勤務時間',
+        'designate_start_time'  => '指定勤務開始時間',
+        'designate_end_time'    => '指定勤務終了時間',
+        'superior_flg'          => '上長フラグ',
+        'admin_flg'             => '管理者フラグ',
+        'password'              => 'パスワード',
       ];
 
       foreach ($list as $key => $value) {

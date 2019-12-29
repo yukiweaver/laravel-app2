@@ -20,9 +20,13 @@
                       <thead>
                         <tr>
                           <th colspan="1">
+                          @if (isCurrentUser($user->id))
                           <a href="/show?current_day={{$lastMonth}}" class="btn-sm btn-primary">←</a>
                             &emsp;時間管理表&emsp;
                           <a href="/show?current_day={{$nextMonth}}" class="btn-sm btn-primary">→</a>
+                          @else
+                          <span>時間管理表</span>
+                          @endif
                           </th>
                           <th>
                           指定勤務開始時間：{{$user->designate_start_time}}<br>
@@ -50,25 +54,30 @@
                       </thead>
                     </table>
 
-                    @if ($user->superior_flg)
-                    <div class="notification-group">
-                      <p>
-                        【所属長承認申請のお知らせ】
-                        <a class="notification" href="#">##件の通知があります</a>
-                      </p>
-                      <p>
-                        【勤怠変更申請のお知らせ】
-                        <a class="notification" href="#">##件の通知があります</a>
-                      </p>
-                      <p>
-                        【残業申請のお知らせ】
-                        @if ($overWorkCount > 0)
-                          <a class="notification" href="#" data-toggle="modal" data-target="#aa">{{$overWorkCount}}件の通知があります</a>
-                        @endif
-                      </p>
-                    </div>
+                    @if (isCurrentUser($user->id))
+                      @if ($user->superior_flg)
+                      <div class="notification-group">
+                        <p>
+                          【所属長承認申請のお知らせ】
+                          <a class="notification" href="#">##件の通知があります</a>
+                        </p>
+                        <p>
+                          【勤怠変更申請のお知らせ】
+                          <a class="notification" href="#">##件の通知があります</a>
+                        </p>
+                        <p>
+                          【残業申請のお知らせ】
+                          @if ($overWorkCount > 0)
+                            <a class="notification" href="#" data-toggle="modal" data-target="#aa">{{$overWorkCount}}件の通知があります</a>
+                          @endif
+                        </p>
+                      </div>
+                      @endif
+                    @else
+                    <a href="/show?current_day={{$currentDay}}" class="btn btn-primary">戻る</a>
                     @endif
 
+                    @if (isCurrentUser($user->id))
                     <div class="btn-group">
                       <a href="/attendance/edit?current_day={{$currentDay}}" class="btn btn-primary">勤怠編集</a>
                       <form name="csv_download" action="{{route('download_data')}}" method="post">
@@ -78,6 +87,7 @@
                       </form>
                       <a href="" class="btn btn-primary">勤怠ログ（承認済み）</a>
                     </div>
+                    @endif
 
                     <table class="table table-bordered table-striped table-condensed">
                       <thead>
@@ -109,7 +119,11 @@
                         @foreach ($date as $d)
                         <tr>
                         <!-- 残業申請 -->
-                          <td><a href="#" class="btn btn-primary" data-toggle="modal" data-target="#a{{$d->id}}">残業申請</a></td>
+                          <td>
+                            @if (isCurrentUser($user->id))
+                            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#a{{$d->id}}">残業申請</a>
+                            @endif
+                          </td>
                         <!-- 日付 -->
                           <td>{{$d->attendance_day->format('m/d')}}</td>
                         <!-- 曜日 -->
@@ -128,11 +142,13 @@
                           </td>
                         <!-- 出社ボタン -->
                           <td>
-                            @if ($today == $d->attendance_day && $d->start_time === null)
+                            @if (isCurrentUser($user->id))
+                              @if ($today == $d->attendance_day && $d->start_time === null)
                               <form action="{{route('start_time')}}" method="post">
                                 @csrf
                                 <input type="submit" value="出社" class="btn btn-primary">
                               </form>
+                              @endif
                             @endif
                           </td>
                         <!-- 退社時間（hour）-->
@@ -149,11 +165,13 @@
                           </td>
                         <!-- 退社ボタン -->
                           <td>
-                            @if ($today == $d->attendance_day && $d->start_time !== null && $d->end_time === null)
-                              <form action="{{route('end_time')}}" method="post">
-                                @csrf
-                                <input type="submit" value="退社" class="btn btn-primary">
-                              </form>
+                            @if (isCurrentUser($user->id))
+                              @if ($today == $d->attendance_day && $d->start_time !== null && $d->end_time === null)
+                                <form action="{{route('end_time')}}" method="post">
+                                  @csrf
+                                  <input type="submit" value="退社" class="btn btn-primary">
+                                </form>
+                              @endif
                             @endif
                           </td>
                         <!-- 在社時間 -->
@@ -221,6 +239,7 @@
                         <td></td>
                         <td>
                           勤怠申請なし：
+                          @if (isCurrentUser($user->id))
                           <form action="#" method="post">
                             <select name="one_month_attendance" class="form-control">
                               <option value=""></option>
@@ -229,6 +248,7 @@
                             </select><br>
                             <input type="submit" class="btn btn-primary" value="申請する">
                           </form>
+                          @endif
                         </td>
                       </tbody>
                     </table>

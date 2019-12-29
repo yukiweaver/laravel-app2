@@ -36,5 +36,6 @@ Route::group(['middleware' => 'admin'], function() {
   Route::post('/import_users_complete', 'UserController@importUsersComplete')->name('import_users_complete');
   Route::post('attendance/download_data', 'AttendanceController@downloadData')->name('download_data');
   Route::post('overwork/overtime', 'OverworkController@overtimeApplication')->name('overtime');
+  Route::post('overwork/approval', 'OverworkController@overtimeApproval')->name('overtime_approval');
 });
 

@@ -54,9 +54,8 @@ class Overwork extends Model
   /**
    * ログインしている上長に申請されている残業申請の数をカウント
    */
-  public static function countOverwork()
+  public static function countOverwork($userId)
   {
-    $userId = auth()->user()->id;
     $count = self::where('instructor_id', $userId)->where('apply_overtime_status', '1')->count();
     return $count;
   }
@@ -64,9 +63,8 @@ class Overwork extends Model
   /**
    * ログインしている上長に申請されている残業申請データを取得
    */
-  public static function findApprovalOverwork()
+  public static function findApprovalOverwork($userId)
   {
-    $userId = auth()->user()->id;
     $overwork = self::where('instructor_id', $userId)->where('apply_overtime_status', '1')->orderBy('user_id')->get();
     return $overwork;
   }

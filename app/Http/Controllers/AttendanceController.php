@@ -123,7 +123,7 @@ class AttendanceController extends Controller
     $currentDay = Carbon::parse($request->input('current_day'));
     $firstDay = $currentDay->copy()->firstOfMonth(); // 月初
     $lastDay = $firstDay->copy()->endOfMonth(); // 月末
-    $date = Attendance::getOneMonthData($firstDay, $lastDay);
+    $date = Attendance::getOneMonthData($firstDay, $lastDay, $userId);
     $week = ['日', '月', '火', '水', '木', '金', '土'];
     $today = Carbon::today();
 

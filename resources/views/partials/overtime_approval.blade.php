@@ -3,13 +3,13 @@
   <div class="modal-dialog modal-dialog-r">
     <div class="modal-content">
       <div class="modal-body">
-        <form action="#" method="post">
+        <form action="{{route('overtime_approval')}}" method="post">
           @csrf
+          <input type="hidden" name="current_day" value="{{$currentDay}}">
           @foreach ($approvalOverwork as $val)
-          {{-- <input type="hidden" name="overwork[{{$val->id}}]['id']" value="{{$val->id}}"> --}}
           <div class="modal-header modal-header-r">
             <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-            <h4 class="modal-title">##からの残業申請</h4>
+            <h4 class="modal-title">{{$val->user->name}}からの残業申請</h4>
           </div>
           <table class="txt1 table table-bordered table-striped table-condensed">
             <thead>
@@ -41,7 +41,7 @@
                 <td>{{$val->business_description}}</td>
                 <!-- 指示者確認 -->
                 <td>
-                  <select name="instructor_id" class="form-control">
+                  <select name="overwork[{{$val->id}}][apply_overtime_status]" class="form-control">
                     @foreach (config('const.APPLY_OVERTIME_STATUS') as $key => $value)
                       <option value="{{$key}}" @if ($key == $val->apply_overtime_status) selected @endif>{{$value}}</option>
                     @endforeach
@@ -49,11 +49,13 @@
                 </td>
                 <!-- 変更 -->
                 <td>
-                  <input type="hidden" name="overwork[{{$val->id}}]['change']" value="0" class="form-control">
-                  <input type="checkbox" name="overwork[{{$val->id}}]['change']" value="1" class="form-control">
+                  <input type="hidden" name="overwork[{{$val->id}}][change]" value="0" class="form-control">
+                  <input type="checkbox" name="overwork[{{$val->id}}][change]" value="1" class="form-control">
                 </td>
                 <!-- 勤怠確認 -->
-                <td><a href="#" class="btn btn-primary">勤怠確認</a></td>
+                <td>
+                  <a href="/show?current_day={{$val->attendance_day->format('Y-m-d')}}&user_id={{$val->user_id}}" class="btn btn-primary">勤怠確認</a>
+                </td>
               </tr>
             </tbody>
           </table>

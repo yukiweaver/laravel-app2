@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
@@ -55,9 +56,6 @@ class UserController extends Controller
     if ($flgData['admin_flg']) {
       return redirect('/index');
     }
-    $sessLogin = session()->get('_login');
-    $userId = $sessLogin['user_id'];
-    $user = User::find($userId);
     
     if (empty($request->input('current_day'))) {
       $currentDay = Carbon::now();
@@ -69,6 +67,18 @@ class UserController extends Controller
       }
       $currentDay = Carbon::parse($request->input('current_day'));
     }
+
+    if (empty($request->input('user_id'))) {
+      $user = auth()->user();
+      $userId = $user->id;
+    } else {
+      $userId = $request->input('user_id');
+      try {
+        $user = User::findOrFail($userId);
+      } catch (ModelNotFoundException $e) {
+        return redirect('/show');
+      }
+    }
     $today = Carbon::today();
     $firstDay = $currentDay->copy()->firstOfMonth(); // 月初
     $lastDay = $firstDay->copy()->endOfMonth(); // 月末
@@ -76,8 +86,8 @@ class UserController extends Controller
     $nextMonth = $currentDay->copy()->addMonthNoOverflow()->format('Y-m-d'); // １ヶ月後の日付
     $week = ['日', '月', '火', '水', '木', '金', '土'];
     $superiors = User::getSuperiorUsers($user->superior_flg);
-    $overworkCount = Overwork::countOverwork();
-    $approvalOverwork = Overwork::findApprovalOverwork();
+    $overworkCount = Overwork::countOverwork($userId);
+    $approvalOverwork = Overwork::findApprovalOverwork($userId);
     
     $dbParams = [];
     for ($i = 0; true; $i++) {
@@ -105,7 +115,7 @@ class UserController extends Controller
       });
     }
 
-    $date = Attendance::getOneMonthData($firstDay, $lastDay);
+    $date = Attendance::getOneMonthData($firstDay, $lastDay, $userId);
     // Carbonインスタンスに変更（出勤日数、在社時間の合計もカウント）
     $attendanceDays = 0;
     $totalWorkingTime = 0;
@@ -340,6 +350,7 @@ class UserController extends Controller
   {
     $validator = Validator::make($data, [
       'current_day' => 'date',
+      'user_id'     => 'integer',
     ]);
     return $validator;
   }

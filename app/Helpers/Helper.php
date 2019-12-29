@@ -40,12 +40,25 @@ if (!function_exists('timeTenDiv')) {
  * @param $time2 指定勤務終了時間
  */
 if (!function_exists('overtimeCalculation')) {
-  function overtimeCalculation($is_next_day, $time, $time2)
+  function overtimeCalculation($isNextDay, $time, $time2)
   {
-    if ($is_next_day) {
+    if ($isNextDay) {
       return round((floatval($time->format('H')) + floatval($time->format('i') / 60)) - (floatval($time2->format('H')) + floatval($time2->format('i') / 60)) + 24.0, 2);
     } else {
       return round((floatval($time->format('H')) + floatval($time->format('i') / 60)) - (floatval($time2->format('H')) + floatval($time2->format('i') / 60)), 2);
     }
+  }
+}
+
+/**
+ * ログインユーザか判定
+ */
+if (!function_exists('isCurrentUser')) {
+  function isCurrentUser($userId)
+  {
+    if (auth()->user()->id == $userId) {
+      return true;
+    }
+    return false;
   }
 }
