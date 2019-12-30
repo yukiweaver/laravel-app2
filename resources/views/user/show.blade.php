@@ -240,8 +240,10 @@
                         <td>
                           勤怠申請なし：
                           @if (isCurrentUser($user->id))
-                          <form action="#" method="post">
-                            <select name="one_month_attendance" class="form-control">
+                          <form action="{{route('one_month_attendance_apply')}}" method="post">
+                            @csrf
+                            <input type="hidden" name="current_day" value="{{$currentDay}}">
+                            <select name="instructor_id" class="form-control">
                               <option value="">選択してください</option>
                               @foreach ($superiors as $superior)
                               <option value="{{$superior->id}}">{{$superior->name}}</option>

@@ -8,6 +8,7 @@ return array(
   'ERR_UPDATE'                                => '更新に失敗しました。',
   'ERR_CSV_IMPORT'                            => '登録に失敗しました。CSVファイルのフォーマットが正しいことを確認してださい。',
   'ERR_APPLY_OVERTIME'                        => '残業申請に失敗しました。',
+  'ERR_INVALID_REQUEST'                       => '不正なリクエストです。',
   'SUCCESS_REGIST_START_TIME'                 => '出社時間を登録しました。',
   'SUCCESS_REGIST_END_TIME'                   => '退社時間を登録しました。',
   'SUCCESS_REGIST_ATTENDANCE_DATA'            => '勤怠データを更新しました。',

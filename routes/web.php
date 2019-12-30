@@ -37,5 +37,6 @@ Route::group(['middleware' => 'admin'], function() {
   Route::post('attendance/download_data', 'AttendanceController@downloadData')->name('download_data');
   Route::post('overwork/overtime', 'OverworkController@overtimeApplication')->name('overtime');
   Route::post('overwork/approval', 'OverworkController@overtimeApproval')->name('overtime_approval');
+  Route::post('one_month_attendance/apply', 'OneMonthAttendanceController@apply')->name('one_month_attendance_apply');
 });
 

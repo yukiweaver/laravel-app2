@@ -23,8 +23,11 @@ class OneMonthAttendanceRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
+        $rules = [
+          'instructor_id' => 'required|integer',
+          'current_day'   => 'required|date',
         ];
+
+        return $rules;
     }
 }
