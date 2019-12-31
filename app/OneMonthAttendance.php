@@ -25,4 +25,16 @@ class OneMonthAttendance extends Model
     'instructor_id',
     'target_month',
   ];
+
+  /**
+   * ログインユーザが申請しているデータ1件取得
+   */
+  public static function findApplyData($userId, $targetMonth)
+  {
+    $oneMonthAttendance = self::where('user_id', $userId)->where('target_month', 'LIKE', "$targetMonth%")->first();
+    if (empty($oneMonthAttendance)) {
+      return null;
+    }
+    return $oneMonthAttendance;
+  }
 }
