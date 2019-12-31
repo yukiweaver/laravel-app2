@@ -9,6 +9,7 @@ use App\User;
 use Carbon\Carbon;
 use App\Attendance;
 use App\Overwork;
+use App\OneMonthAttendance;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -88,7 +89,14 @@ class UserController extends Controller
     $superiors = User::getSuperiorUsers($user->superior_flg);
     $overworkCount = Overwork::countOverwork($userId);
     $approvalOverwork = Overwork::findApprovalOverwork($userId);
-    
+    $oneMonthAttendanceCount = OneMonthAttendance::countOneMonthAttendance($userId);
+    $approvalOneMonthAttendance = OneMonthAttendance::findApprovalOneMonthAttendance($userId);
+    $applyOneMonthAttendance = OneMonthAttendance::findApplyData($userId, $currentDay->format('Y-m'));
+
+    if (isset($applyOneMonthAttendance)) {
+      $applyOneMonthAttendance->instructor = User::find($applyOneMonthAttendance->instructor_id)->name;
+    }
+
     $dbParams = [];
     for ($i = 0; true; $i++) {
         $day = $firstDay->addDays($i);
@@ -146,24 +154,33 @@ class UserController extends Controller
         $val->scheduled_end_time = Carbon::parse($val->scheduled_end_time);
       }
     }
+
+    if ($approvalOneMonthAttendance->isNotEmpty()) {
+      foreach ($approvalOneMonthAttendance as $val) {
+        $val->target_month = Carbon::parse($val->target_month);
+      }
+    }
     
     $viewParams = [
-      'user'                  => $user,
-      'date'                  => $date,
-      'week'                  => $week,
-      'lastMonth'             => $lastMonth,
-      'nextMonth'             => $nextMonth,
-      'firstDay'              => $firstDay,
-      'lastDay'               => $lastDay,
-      'today'                 => $today,
-      'currentDay'            => $currentDay->format('Y-m-d'),
-      'attendanceDays'        => $attendanceDays,
-      'totalWorkingTime'      => $totalWorkingTime,
-      'totalWorkingHours'     => $totalWorkingHours,
-      'superiors'             => $superiors,
-      'designateEndTime'      => Carbon::parse($currentDay->format('Y-m-d') . $user->designate_end_time),
-      'overWorkCount'         => $overworkCount,
-      'approvalOverwork'      => $approvalOverwork,
+      'user'                          => $user,
+      'date'                          => $date,
+      'week'                          => $week,
+      'lastMonth'                     => $lastMonth,
+      'nextMonth'                     => $nextMonth,
+      'firstDay'                      => $firstDay,
+      'lastDay'                       => $lastDay,
+      'today'                         => $today,
+      'currentDay'                    => $currentDay->format('Y-m-d'),
+      'attendanceDays'                => $attendanceDays,
+      'totalWorkingTime'              => $totalWorkingTime,
+      'totalWorkingHours'             => $totalWorkingHours,
+      'superiors'                     => $superiors,
+      'designateEndTime'              => Carbon::parse($currentDay->format('Y-m-d') . $user->designate_end_time),
+      'overWorkCount'                 => $overworkCount,
+      'approvalOverwork'              => $approvalOverwork,
+      'oneMonthAttendanceCount'       => $oneMonthAttendanceCount,
+      'approvalOneMonthAttendance'    => $approvalOneMonthAttendance,
+      'applyOneMonthAttendance'       => $applyOneMonthAttendance,
     ];
     return view('user.show', $viewParams);
   }

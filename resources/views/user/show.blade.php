@@ -59,7 +59,9 @@
                       <div class="notification-group">
                         <p>
                           【所属長承認申請のお知らせ】
-                          <a class="notification" href="#">##件の通知があります</a>
+                          @if ($oneMonthAttendanceCount > 0)
+                          <a class="notification" href="#" data-toggle="modal" data-target="#bb">{{$oneMonthAttendanceCount}}件の通知があります</a>
+                          @endif
                         </p>
                         <p>
                           【勤怠変更申請のお知らせ】
@@ -238,7 +240,15 @@
                         <td></td>
                         <td></td>
                         <td>
+                          @if ($applyOneMonthAttendance == null || $applyOneMonthAttendance->apply_status == 0)
                           勤怠申請なし：
+                          @elseif ($applyOneMonthAttendance->apply_status == 1)
+                          {{$applyOneMonthAttendance->instructor}}に申請中
+                          @elseif ($applyOneMonthAttendance->apply_status == 2)
+                          {{$applyOneMonthAttendance->instructor}}から承認
+                          @elseif ($applyOneMonthAttendance->apply_status == 3)
+                          {{$applyOneMonthAttendance->instructor}}から否認
+                          @endif
                           @if (isCurrentUser($user->id))
                           <form action="{{route('one_month_attendance_apply')}}" method="post">
                             @csrf
@@ -264,4 +274,5 @@
   @include('partials.overtime')
 @endforeach
 @include('partials.overtime_approval')
+@include('partials.one_month_attendance_approval')
 @endsection

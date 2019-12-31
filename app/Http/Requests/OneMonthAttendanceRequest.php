@@ -28,6 +28,13 @@ class OneMonthAttendanceRequest extends FormRequest
           'current_day'   => 'required|date',
         ];
 
+        if ($this->one_month_attendance) {
+          $rules = [];
+          $rules['one_month_attendance.*.apply_status'] = 'required|integer|lt:4'; // 4より小さいか
+          $rules['one_month_attendance.*.change'] = 'required|boolean';
+          $rules['current_day'] = 'required|date';
+        }
+
         return $rules;
     }
 }

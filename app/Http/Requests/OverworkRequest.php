@@ -34,7 +34,7 @@ class OverworkRequest extends FormRequest
       if ($this->overwork) {
         $rules = [];
         $rules['overwork.*.change'] = 'required|boolean';
-        $rules['overwork.*.apply_overtime_status'] = 'required|integer';
+        $rules['overwork.*.apply_overtime_status'] = 'required|integer|lt:4';
         $rules['current_day'] = 'required|date';
       }
 

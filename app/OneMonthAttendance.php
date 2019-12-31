@@ -37,4 +37,22 @@ class OneMonthAttendance extends Model
     }
     return $oneMonthAttendance;
   }
+
+  /**
+   * ログインしている上長に申請されている月勤怠申請の数を取得
+   */
+  public static function countOneMonthAttendance($userId)
+  {
+    $count = self::where('instructor_id', $userId)->where('apply_status', '1')->count();
+    return $count;
+  }
+
+  /**
+   * ログインしている上長に申請されている月勤怠申請データを取得
+   */
+  public static function findApprovalOneMonthAttendance($userId)
+  {
+    $oneMonthAttendance = self::where('instructor_id', $userId)->where('apply_status', '1')->orderBy('user_id')->get();
+    return $oneMonthAttendance;
+  }
 }
