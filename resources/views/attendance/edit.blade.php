@@ -63,7 +63,7 @@
                           <!-- 在社時間 -->
                           <td>
                             @if ($d->start_time !== null && $d->end_time !== null)
-                              {{calculation($d->start_time->diffInSeconds($d->end_time))}}
+                              {{overtimeCalculation($d->is_next_day, $d->end_time, $d->start_time)}}
                             @endif
                           </td>
                           <!-- 備考 -->

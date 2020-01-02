@@ -135,14 +135,14 @@ class UserController extends Controller
         $attendanceDays++;
       }
       if ($d->start_time !== null && $d->end_time !== null) {
-        $totalWorkingTime += $d->start_time->diffInSeconds($d->end_time);
+        $totalWorkingTime += $d->start_time->diffInSeconds($d->end_time); // todo:翌日反映
       }
       $overwork = $d->overwork()->first();
       $d->scheduled_end_time = $overwork ? Carbon::parse($overwork->scheduled_end_time) : null;
       $d->business_description = $overwork ? $overwork->business_description : null;
       $d->apply_overtime_status = $overwork ? $overwork->apply_overtime_status : null;
       $d->instructor = $overwork ? User::find($overwork->instructor_id)->name : null;
-      $d->is_next_day = $overwork ? $overwork->is_next_day : null;
+      $d->is_o_next_day = $overwork ? $overwork->is_next_day : null;
     }
     $totalWorkingTime = calculation($totalWorkingTime);
     $totalWorkingHours = timeTenDiv($user->basic_work_time) * $attendanceDays; // 総合勤務時間

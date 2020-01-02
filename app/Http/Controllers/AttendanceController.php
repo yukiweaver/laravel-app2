@@ -161,39 +161,65 @@ class AttendanceController extends Controller
 
     $dbParams = [];
     $message = null;
+    $x = 0;
+    // 仕様：$instructorIdが全てnullならなんでもupdate
+    //      $instructorIdがnullでない値一つでもある場合、一つでも不正な値があれば更新処理全て無効
+    foreach ($request->attendance as $val) {
+      if (empty($val['instructor_id'])) {
+        continue;
+      }
+      $x ++;
+    }
     foreach ($request->attendance as $key => $val) {
-      $startTime = $val['start_time'];
-      $endTime = $val['end_time'];
-      $note = $val['note'];
-      $isNextDay = $val['is_next_day'];
-      $instructorId = $val['instructor_id'];
-      // 出勤時間、退勤時間、どちらか一方のみ空ならエラー
-      if (!empty($startTime) && empty($endTime) || empty($startTime) && !empty($endTime)) {
-        $message = config('const.ERR_INVALID_DATA');
-        break;
-      }
-      // 出勤時間 > 退勤時間　でエラー
-      if ($startTime > $endTime) {
-        $message = config('const.ERR_START_TIME_LARGER');
-        break;
-      }
+      $startTime      = $val['start_time'];
+      $endTime        = $val['end_time'];
+      $note           = $val['note'];
+      $isNextDay      = $val['is_next_day'];
+      $instructorId   = $val['instructor_id'];
       $attendance = Attendance::find($key);
-      // 明日以降の編集は不可
-      if (Carbon::parse($attendance->attendance_day) > $today) {
-        $dbStartTime = $attendance->start_time ? Carbon::parse($attendance->start_time)->format('H:i') : null;
-        $dbEndTime = $attendance->end_time ? Carbon::parse($attendance->end_time)->format('H:i') : null;
-        $dbNote = $attendance->note;
-        if ($dbStartTime != $startTime || $dbEndTime != $endTime || $dbNote != $note) {
-          $message = config('const.ERR_EDIT_AFTER_TOMORROW');
+      if ($x == 0) {
+        $dbParams[] = [
+          'id' => $key,
+          'start_time' => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
+          'end_time' => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
+          'note' => $note,
+          'is_next_day' => $isNextDay,
+          'instructor_id' => $instructorId,
+        ];
+      } else {
+        // 出勤時間、退勤時間、どちらか一方のみ空ならエラー
+        if (!empty($startTime) && empty($endTime) || empty($startTime) && !empty($endTime)) {
+          $message = config('const.ERR_INVALID_DATA');
           break;
         }
+        // 出勤時間 > 退勤時間　でエラー
+        // todo:翌日の反映
+        if ($startTime > $endTime) {
+          $message = config('const.ERR_START_TIME_LARGER');
+          break;
+        }
+
+        // 明日以降の編集は不可
+        if (Carbon::parse($attendance->attendance_day) > $today) {
+          $dbStartTime = $attendance->start_time ? Carbon::parse($attendance->start_time)->format('H:i') : null;
+          $dbEndTime = $attendance->end_time ? Carbon::parse($attendance->end_time)->format('H:i') : null;
+          $dbNote = $attendance->note;
+          $dbIsNextDay = $attendance->is_next_day;
+          $dbInstructorId = $attendance->instructor_id;
+          if ($dbStartTime != $startTime || $dbEndTime != $endTime || $dbNote != $note || $dbIsNextDay != $isNextDay || $dbInstructorId != $instructorId) {
+            $message = config('const.ERR_EDIT_AFTER_TOMORROW');
+            break;
+          }
+        }
+        $dbParams[] = [
+          'id' => $key,
+          'start_time' => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
+          'end_time' => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
+          'note' => $note,
+          'is_next_day' => $isNextDay,
+          'instructor_id' => $instructorId,
+        ];
       }
-      $dbParams[] = [
-        'id' => $key,
-        'start_time' => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
-        'end_time' => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
-        'note' => $note,
-      ];
     }
     
     if (!is_null($message)) {
@@ -205,9 +231,11 @@ class AttendanceController extends Controller
     $dbParam = [];
     foreach ($dbParams as $param) {
       $dbParam[] = [
-        'start_time' => $param['start_time'],
-        'end_time' => $param['end_time'],
-        'note' => $param['note'],
+        'start_time'      => $param['start_time'],
+        'end_time'        => $param['end_time'],
+        'note'            => $param['note'],
+        'is_next_day'     => $param['is_next_day'],
+        'instructor_id'   => $param['instructor_id'],
       ];
       Attendance::find($param['id'])->fill($dbParam[$i])->save();
       $i++;

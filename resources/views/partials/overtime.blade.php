@@ -38,7 +38,7 @@
                 <!-- 翌日 -->
                 <td>
                   <input type="hidden" name="is_next_day" value="0">
-                  <input type="checkbox" name="is_next_day" value="1" @if ($d->is_next_day) checked @endif class="form-control">
+                  <input type="checkbox" name="is_next_day" value="1" @if ($d->is_o_next_day) checked @endif class="form-control">
                 </td>
                 <!-- 業務処理内容 -->
                 <td>

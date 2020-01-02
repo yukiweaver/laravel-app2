@@ -36,7 +36,7 @@
                 <!-- 指定勤務終了時間 -->
                 <td>{{$val->designate_end_time->format('H:i')}}</td>
                 <!-- 時間外時間 -->
-                <td>{{overtimeCalculation($val->is_next_day, $val->scheduled_end_time, $val->designate_end_time)}}</td>
+                <td>{{overtimeCalculation($val->is_o_next_day, $val->scheduled_end_time, $val->designate_end_time)}}</td>
                 <!-- 業務処理内容 -->
                 <td>{{$val->business_description}}</td>
                 <!-- 指示者確認 -->

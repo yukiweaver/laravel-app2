@@ -179,7 +179,7 @@
                         <!-- 在社時間 -->
                           <td>
                             @if ($d->start_time !== null && $d->end_time !== null)
-                                {{calculation($d->start_time->diffInSeconds($d->end_time))}}
+                              {{overtimeCalculation($d->is_next_day, $d->end_time, $d->start_time)}}
                             @endif
                           </td>
                         <!-- 備考 -->
@@ -199,7 +199,7 @@
                         <!-- 時間外時間 -->
                           <td>
                             @if ($d->scheduled_end_time !== null)
-                                {{overtimeCalculation($d->is_next_day, $d->scheduled_end_time, $designateEndTime)}}
+                                {{overtimeCalculation($d->is_o_next_day, $d->scheduled_end_time, $designateEndTime)}}
                             @endif
                           </td>
                         <!-- 業務処理内容-->
@@ -215,7 +215,6 @@
                             @endif
                           </td>
                         </tr>
-                        {{-- @include('partials.overtime', ['d' => $d]) --}}
                         @endforeach
                         <td colspan="2">
                           総合勤務時間：
