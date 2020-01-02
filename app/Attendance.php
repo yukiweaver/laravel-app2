@@ -28,9 +28,14 @@ class Attendance extends Model
      * @var array
      */
     protected $fillable = [
-      'start_time', 
-      'end_time', 
+      'user_id',
+      'start_time',
+      'end_time',
       'note',
+      'attendance_day',
+      'is_next_day',
+      'instructor_id',
+      'apply_status',
   ];
 
     /**

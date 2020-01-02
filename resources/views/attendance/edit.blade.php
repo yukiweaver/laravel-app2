@@ -56,7 +56,10 @@
                             @endif
                           </td>
                           <!-- 翌日 -->
-                          <td></td>
+                          <td>
+                            <input type="hidden" name="attendance[{{$d->id}}][is_next_day]" value="0">
+                            <input type="checkbox" name="attendance[{{$d->id}}][is_next_day]" value="1" @if ($d->is_next_day) checked @endif class="form-control">
+                          </td>
                           <!-- 在社時間 -->
                           <td>
                             @if ($d->start_time !== null && $d->end_time !== null)
@@ -68,7 +71,14 @@
                             <input type="text" name="attendance[{{$d->id}}][note]" value="{{$d->note}}" class="form-control" @if ($d->attendance_day > $today) readonly @endif>
                           </td>
                           <!-- 指示者確認 -->
-                          <td></td>
+                          <td>
+                            <select name="attendance[{{$d->id}}][instructor_id]" class="form-control">
+                              <option value=""></option>
+                              @foreach ($superiors as $superior)
+                                <option value="{{$superior->id}}">{{$superior->name}}</option>
+                              @endforeach
+                            </select>
+                          </td>
                         </tr>
                         @endforeach
                       </tbody>

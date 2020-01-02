@@ -27,6 +27,8 @@ class AttendanceRequest extends FormRequest
           'attendance.*.start_time'     => 'date_format:H:i|string|nullable',
           'attendance.*.end_time'       => 'date_format:H:i|string|nullable',
           'attendance.*.note'           => 'string|max:100|nullable',
+          'attendance.*.is_next_day'    => 'boolean',
+          'attendance.*.instructor_id'  => 'integer|nullable',
           'current_day'                 => 'required|date',
         ];
         return $rules;

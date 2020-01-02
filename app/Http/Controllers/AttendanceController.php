@@ -126,6 +126,7 @@ class AttendanceController extends Controller
     $date = Attendance::getOneMonthData($firstDay, $lastDay, $userId);
     $week = ['日', '月', '火', '水', '木', '金', '土'];
     $today = Carbon::today();
+    $superiors = User::getSuperiorUsers($user->superior_flg);
 
     foreach ($date as $d) {
       $d->attendance_day = Carbon::parse($d->attendance_day);
@@ -134,10 +135,11 @@ class AttendanceController extends Controller
     }
     
     $viewParams = [
-      'date' => $date,
-      'week' => $week,
-      'currentDay' => $currentDay->format('Y-m-d'),
-      'today' => $today,
+      'date'        => $date,
+      'week'        => $week,
+      'currentDay'  => $currentDay->format('Y-m-d'),
+      'today'       => $today,
+      'superiors'   => $superiors,
     ];
     return view('attendance.edit', $viewParams);
   }
@@ -163,6 +165,8 @@ class AttendanceController extends Controller
       $startTime = $val['start_time'];
       $endTime = $val['end_time'];
       $note = $val['note'];
+      $isNextDay = $val['is_next_day'];
+      $instructorId = $val['instructor_id'];
       // 出勤時間、退勤時間、どちらか一方のみ空ならエラー
       if (!empty($startTime) && empty($endTime) || empty($startTime) && !empty($endTime)) {
         $message = config('const.ERR_INVALID_DATA');
