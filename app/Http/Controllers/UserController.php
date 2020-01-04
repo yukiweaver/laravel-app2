@@ -127,24 +127,25 @@ class UserController extends Controller
     // Carbonインスタンスに変更（出勤日数、在社時間の合計もカウント）
     $attendanceDays = 0;
     $totalWorkingTime = 0;
+    // dd($date);
     foreach ($date as $d) {
       $d->attendance_day = Carbon::parse($d->attendance_day);
       $d->start_time = $d->start_time ? Carbon::parse($d->start_time) : null;
       $d->end_time = $d->end_time ? Carbon::parse($d->end_time) : null;
+      $d->attendance_instructor = $d->instructor_id ? User::find($d->instructor_id)->name : null; // 勤怠指示者名
       if (isset($d->start_time)) {
         $attendanceDays++;
       }
       if ($d->start_time !== null && $d->end_time !== null) {
-        $totalWorkingTime += $d->start_time->diffInSeconds($d->end_time); // todo:翌日反映
+        $totalWorkingTime += overtimeCalculation($d->is_next_day, $d->end_time, $d->start_time); // 在社時間の合計
       }
       $overwork = $d->overwork()->first();
       $d->scheduled_end_time = $overwork ? Carbon::parse($overwork->scheduled_end_time) : null;
       $d->business_description = $overwork ? $overwork->business_description : null;
       $d->apply_overtime_status = $overwork ? $overwork->apply_overtime_status : null;
-      $d->instructor = $overwork ? User::find($overwork->instructor_id)->name : null;
+      $d->instructor = $overwork ? User::find($overwork->instructor_id)->name : null; // 残業指示者名
       $d->is_o_next_day = $overwork ? $overwork->is_next_day : null;
     }
-    $totalWorkingTime = calculation($totalWorkingTime);
     $totalWorkingHours = timeTenDiv($user->basic_work_time) * $attendanceDays; // 総合勤務時間
 
     if ($approvalOverwork->isNotEmpty()) {

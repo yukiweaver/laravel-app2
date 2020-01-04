@@ -17,6 +17,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class AttendanceController extends Controller
 {
 
+  const NOTHING   = '0';
+  const APPLYING  = '1';
+
  /**
   * コンストラクタ
   * 継承したControllerクラスのmiddleware()を利用する
@@ -163,7 +166,7 @@ class AttendanceController extends Controller
     $message = null;
     $x = 0;
     // 仕様：$instructorIdが全てnullならなんでもupdate
-    //      $instructorIdがnullでない値一つでもある場合、一つでも不正な値があれば更新処理全て無効
+    //      $instructorIdがnullでない値が一つでもある場合、一つでも不正な値があれば更新処理全て無効
     foreach ($request->attendance as $val) {
       if (empty($val['instructor_id'])) {
         continue;
@@ -179,24 +182,28 @@ class AttendanceController extends Controller
       $attendance = Attendance::find($key);
       if ($x == 0) {
         $dbParams[] = [
-          'id' => $key,
-          'start_time' => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
-          'end_time' => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
-          'note' => $note,
-          'is_next_day' => $isNextDay,
+          'id'            => $key,
+          'start_time'    => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
+          'end_time'      => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
+          'note'          => $note,
+          'is_next_day'   => $isNextDay,
           'instructor_id' => $instructorId,
+          'apply_status'  => self::NOTHING,
         ];
       } else {
+
         // 出勤時間、退勤時間、どちらか一方のみ空ならエラー
         if (!empty($startTime) && empty($endTime) || empty($startTime) && !empty($endTime)) {
           $message = config('const.ERR_INVALID_DATA');
           break;
         }
-        // 出勤時間 > 退勤時間　でエラー
-        // todo:翌日の反映
-        if ($startTime > $endTime) {
-          $message = config('const.ERR_START_TIME_LARGER');
-          break;
+
+        // 翌日チェックなし かつ 出勤時間 > 退勤時間　でエラー
+        if (empty($isNextDay)) {
+          if ($startTime > $endTime) {
+            $message = config('const.ERR_START_TIME_LARGER');
+            break;
+          }
         }
 
         // 明日以降の編集は不可
@@ -212,12 +219,13 @@ class AttendanceController extends Controller
           }
         }
         $dbParams[] = [
-          'id' => $key,
-          'start_time' => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
-          'end_time' => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
-          'note' => $note,
-          'is_next_day' => $isNextDay,
+          'id'            => $key,
+          'start_time'    => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
+          'end_time'      => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
+          'note'          => $note,
+          'is_next_day'   => $isNextDay,
           'instructor_id' => $instructorId,
+          'apply_status'  => $instructorId ? self::APPLYING : self::NOTHING,
         ];
       }
     }
@@ -236,6 +244,7 @@ class AttendanceController extends Controller
         'note'            => $param['note'],
         'is_next_day'     => $param['is_next_day'],
         'instructor_id'   => $param['instructor_id'],
+        'apply_status'    => $param['apply_status'],
       ];
       Attendance::find($param['id'])->fill($dbParam[$i])->save();
       $i++;

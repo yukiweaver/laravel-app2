@@ -207,11 +207,19 @@
                         <!-- 指示者確認 -->
                           <td>
                             @if ($d->apply_overtime_status == 1)
-                              {{$d->instructor}}に申請中
+                            【残業】{{$d->instructor}}に申請中
                             @elseif ($d->apply_overtime_status == 2)
-                              {{$d->instructor}}から承認
+                            【残業】{{$d->instructor}}から承認
                             @elseif($d->apply_overtime_status == 3)
-                              {{$d->instructor}}から否認
+                            【残業】{{$d->instructor}}から否認
+                            @endif
+                            <br>
+                            @if ($d->apply_status == 1)
+                            【勤怠】{{$d->attendance_instructor}}に申請中
+                            @elseif ($d->apply_status == 2)
+                            【勤怠】{{$d->attendance_instructor}}から承認
+                            @elseif($d->apply_status == 3)
+                            【勤怠】{{$d->attendance_instructor}}から否認
                             @endif
                           </td>
                         </tr>
