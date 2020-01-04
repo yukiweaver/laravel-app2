@@ -65,7 +65,7 @@
                         </p>
                         <p>
                           【勤怠変更申請のお知らせ】
-                          <a class="notification" href="#">##件の通知があります</a>
+                          <a class="notification" href="#" data-toggle="modal" data-target="#aaa">##件の通知があります</a>
                         </p>
                         <p>
                           【残業申請のお知らせ】
@@ -282,4 +282,5 @@
 @endforeach
 @include('partials.overtime_approval')
 @include('partials.one_month_attendance_approval')
+@include('partials.attendance_approval')
 @endsection
