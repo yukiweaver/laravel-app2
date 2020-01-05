@@ -65,7 +65,9 @@
                         </p>
                         <p>
                           【勤怠変更申請のお知らせ】
-                          <a class="notification" href="#" data-toggle="modal" data-target="#aaa">##件の通知があります</a>
+                          @if ($attendanceCount > 0)
+                          <a class="notification" href="#" data-toggle="modal" data-target="#cc">{{$attendanceCount}}件の通知があります</a>
+                          @endif
                         </p>
                         <p>
                           【残業申請のお知らせ】

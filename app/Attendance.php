@@ -36,6 +36,8 @@ class Attendance extends Model
       'is_next_day',
       'instructor_id',
       'apply_status',
+      'previous_start_time',
+      'previous_end_time',
   ];
 
     /**
@@ -75,6 +77,24 @@ class Attendance extends Model
     public static function getAttendance($attendanceId)
     {
       $attendance = self::where('user_id', auth()->user()->id)->where('id', $attendanceId)->first();
+      return $attendance;
+    }
+
+    /**
+     * ログインしている上長に申請されている勤怠申請の数をカウント
+     */
+    public static function countAttendance($userId)
+    {
+      $count = self::where('instructor_id', $userId)->where('apply_status', '1')->count();
+      return $count;
+    }
+
+    /**
+     * ログインしている上長に申請されている勤怠申請データを取得
+     */
+    public static function findApprovalAttendance($userId)
+    {
+      $attendance = self::where('instructor_id', $userId)->where('apply_status', '1')->orderBy('user_id')->get();
       return $attendance;
     }
 }

@@ -14,9 +14,8 @@ class AddColumnsToAttendancesTable extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->boolean('is_next_day')->default(false);
-            $table->integer('instructor_id')->nullable();
-            $table->string('apply_status')->default('0');
+            $table->datetime('previous_start_time')->nullable();
+            $table->datetime('previous_end_time')->nullable();
         });
     }
 
@@ -28,9 +27,8 @@ class AddColumnsToAttendancesTable extends Migration
     public function down()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->dropColumn('is_next_day');
-            $table->dropColumn('instructor_id');
-            $table->dropColumn('apply_status');
+            $table->dropColumn('previous_start_time');
+            $table->dropColumn('previous_end_time');
         });
     }
 }

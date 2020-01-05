@@ -92,6 +92,8 @@ class UserController extends Controller
     $oneMonthAttendanceCount = OneMonthAttendance::countOneMonthAttendance($userId);
     $approvalOneMonthAttendance = OneMonthAttendance::findApprovalOneMonthAttendance($userId);
     $applyOneMonthAttendance = OneMonthAttendance::findApplyData($userId, $currentDay->format('Y-m'));
+    $attendanceCount = Attendance::countAttendance($userId);
+    $approvalAttendance = Attendance::findApprovalAttendance($userId);
 
     if (isset($applyOneMonthAttendance)) {
       $applyOneMonthAttendance->instructor = User::find($applyOneMonthAttendance->instructor_id)->name;
@@ -127,7 +129,6 @@ class UserController extends Controller
     // Carbonインスタンスに変更（出勤日数、在社時間の合計もカウント）
     $attendanceDays = 0;
     $totalWorkingTime = 0;
-    // dd($date);
     foreach ($date as $d) {
       $d->attendance_day = Carbon::parse($d->attendance_day);
       $d->start_time = $d->start_time ? Carbon::parse($d->start_time) : null;
@@ -161,6 +162,16 @@ class UserController extends Controller
         $val->target_month = Carbon::parse($val->target_month);
       }
     }
+
+    if ($approvalAttendance->isNotEmpty()) {
+      foreach ($approvalAttendance as $val) {
+        $val->attendance_day = Carbon::parse($val->attendance_day);
+        $val->start_time = Carbon::parse($val->start_time);
+        $val->end_time = Carbon::parse($val->end_time);
+        $val->previous_start_time = Carbon::parse($val->previous_start_time);
+        $val->previous_end_time = Carbon::parse($val->previous_end_time);
+      }
+    }
     
     $viewParams = [
       'user'                          => $user,
@@ -182,6 +193,8 @@ class UserController extends Controller
       'oneMonthAttendanceCount'       => $oneMonthAttendanceCount,
       'approvalOneMonthAttendance'    => $approvalOneMonthAttendance,
       'applyOneMonthAttendance'       => $applyOneMonthAttendance,
+      'attendanceCount'               => $attendanceCount,
+      'approvalAttendance'            => $approvalAttendance,
     ];
     return view('user.show', $viewParams);
   }

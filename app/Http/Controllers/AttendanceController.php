@@ -167,6 +167,7 @@ class AttendanceController extends Controller
     $x = 0;
     // 仕様：$instructorIdが全てnullならなんでもupdate
     //      $instructorIdがnullでない値が一つでもある場合、一つでも不正な値があれば更新処理全て無効
+    //       リクエスト指示者確認が空なら変更前のデータでupdate（nullで上書きしない）
     foreach ($request->attendance as $val) {
       if (empty($val['instructor_id'])) {
         continue;
@@ -180,15 +181,18 @@ class AttendanceController extends Controller
       $isNextDay      = $val['is_next_day'];
       $instructorId   = $val['instructor_id'];
       $attendance = Attendance::find($key);
+      $previousAttendance = $attendance->getOriginal();
       if ($x == 0) {
         $dbParams[] = [
-          'id'            => $key,
-          'start_time'    => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
-          'end_time'      => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
-          'note'          => $note,
-          'is_next_day'   => $isNextDay,
-          'instructor_id' => $instructorId,
-          'apply_status'  => self::NOTHING,
+          'id'                  => $key,
+          'start_time'          => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
+          'end_time'            => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
+          'note'                => $note,
+          'is_next_day'         => $isNextDay,
+          'instructor_id'       => $previousAttendance['instructor_id'],
+          'apply_status'        => $previousAttendance['apply_status'],
+          'previous_start_time' => $previousAttendance['start_time'],
+          'previous_end_time'   => $previousAttendance['end_time'],
         ];
       } else {
 
@@ -219,13 +223,15 @@ class AttendanceController extends Controller
           }
         }
         $dbParams[] = [
-          'id'            => $key,
-          'start_time'    => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
-          'end_time'      => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
-          'note'          => $note,
-          'is_next_day'   => $isNextDay,
-          'instructor_id' => $instructorId,
-          'apply_status'  => $instructorId ? self::APPLYING : self::NOTHING,
+          'id'                  => $key,
+          'start_time'          => $startTime ? Carbon::parse($attendance->attendance_day . $startTime)->format('Y-m-d H:i:s') : null,
+          'end_time'            => $endTime ? Carbon::parse($attendance->attendance_day . $endTime)->format('Y-m-d H:i:s') : null,
+          'note'                => $note,
+          'is_next_day'         => $isNextDay,
+          'instructor_id'       => $instructorId ? $instructorId : $previousAttendance['instructor_id'],
+          'apply_status'        => $instructorId ? self::APPLYING : $previousAttendance['apply_status'],
+          'previous_start_time' => $previousAttendance['start_time'],
+          'previous_end_time'   => $previousAttendance['end_time'],
         ];
       }
     }
@@ -239,12 +245,14 @@ class AttendanceController extends Controller
     $dbParam = [];
     foreach ($dbParams as $param) {
       $dbParam[] = [
-        'start_time'      => $param['start_time'],
-        'end_time'        => $param['end_time'],
-        'note'            => $param['note'],
-        'is_next_day'     => $param['is_next_day'],
-        'instructor_id'   => $param['instructor_id'],
-        'apply_status'    => $param['apply_status'],
+        'start_time'          => $param['start_time'],
+        'end_time'            => $param['end_time'],
+        'note'                => $param['note'],
+        'is_next_day'         => $param['is_next_day'],
+        'instructor_id'       => $param['instructor_id'],
+        'apply_status'        => $param['apply_status'],
+        'previous_start_time' => $param['previous_start_time'],
+        'previous_end_time'   => $param['previous_end_time'],
       ];
       Attendance::find($param['id'])->fill($dbParam[$i])->save();
       $i++;
