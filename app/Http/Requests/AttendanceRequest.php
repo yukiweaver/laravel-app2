@@ -29,8 +29,18 @@ class AttendanceRequest extends FormRequest
           'attendance.*.note'           => 'string|max:100|nullable',
           'attendance.*.is_next_day'    => 'boolean',
           'attendance.*.instructor_id'  => 'integer|nullable',
+          'attendance.*.apply_status'   => 'integer|lt:4',
+          'attendance.*.change'         => 'required|boolean',
           'current_day'                 => 'required|date',
         ];
+        if ($this->attendance_approval) {
+          $rules = [];
+          $rules = [
+            'attendance_approval.*.apply_status'  => 'required|integer|lt:4',
+            'attendance_approval.*.change'        => 'required|boolean',
+            'current_day'                         => 'required|date',
+          ];
+        }
         return $rules;
     }
 }

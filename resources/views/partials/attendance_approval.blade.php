@@ -3,10 +3,10 @@
   <div class="modal-dialog modal-dialog-r">
     <div class="modal-content">
       <div class="modal-body">
-        <form action="#" method="post">
+        <form action="{{route('attendance_approval')}}" method="post">
           @csrf
+          <input type="hidden" name="current_day" value="{{$currentDay}}">
           @foreach ($approvalAttendance as $val)
-          {{-- <input type="hidden" name="attendance_id" value="{{$d->id}}"> --}}
           <div class="modal-header modal-header-r">
             <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
             <h4 class="modal-title">{{$val->user->name}}からの勤怠申請</h4>
@@ -83,7 +83,7 @@
                 <td>{{$val->note}}</td>
                 <!-- 第十二項：指示者確認 -->
                 <td>
-                  <select name="attendance[{{$val->id}}][apply_status]" class="form-control">
+                  <select name="attendance_approval[{{$val->id}}][apply_status]" class="form-control">
                     @foreach (config('const.APPLY_OVERTIME_STATUS') as $key => $value)
                       <option value="{{$key}}" @if ($key == $val->apply_status) selected @endif>{{$value}}</option>
                     @endforeach
@@ -91,8 +91,8 @@
                 </td>
                 <!-- 第十三項：変更 -->
                 <td>
-                  <input type="hidden" name="attendance[{{$val->id}}][change]" value="0" class="form-control">
-                  <input type="checkbox" name="attendance[{{$val->id}}][change]" value="1" class="form-control">
+                  <input type="hidden" name="attendance_approval[{{$val->id}}][change]" value="0" class="form-control">
+                  <input type="checkbox" name="attendance_approval[{{$val->id}}][change]" value="1" class="form-control">
                 </td>
                 <!-- 第十四項：勤怠を確認 -->
                 <td>

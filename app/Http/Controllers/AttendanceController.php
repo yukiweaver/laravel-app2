@@ -13,6 +13,7 @@ use Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AttendanceController extends Controller
 {
@@ -259,6 +260,32 @@ class AttendanceController extends Controller
     }
 
     return redirect("/show?current_day=$currentDay")->with('flash_message', config('const.SUCCESS_REGIST_ATTENDANCE_DATA'));
+  }
+
+  /**
+   * 勤怠変更承認アクション
+   */
+  public function approval(AttendanceRequest $request)
+  {
+    $flgData = $request->flg_data;
+    // adminは不可
+    if ($flgData['admin_flg']) {
+      return redirect('/index');
+    }
+    $params = $request->attendance_approval;
+    $currentDay = $request->current_day;
+    $total = 0; // ループ回数
+    $i = 0; // 処理数
+    foreach ($params as $key => $val) {
+      $total ++;
+      // 「変更」にチェックなしでスキップ
+      if ($val['change'] == 0) {
+        continue;
+      }
+      Attendance::find($key)->fill($params[$key])->save();
+      $i ++;
+    }
+    return redirect("/show?current_day=$currentDay")->with('flash_message', "${total}件中${i}件更新しました。");
   }
 
   /**

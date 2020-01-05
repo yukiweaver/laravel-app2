@@ -10,6 +10,7 @@ return array(
   'ERR_APPLY_OVERTIME'                        => '残業申請に失敗しました。',
   'ERR_APPLY_ONE_MONTH_ATTENDANCE'            => '月勤怠データの申請に失敗しました。',
   'ERR_INVALID_REQUEST'                       => '不正なリクエストです。',
+  'ERR_NOT_FOUND_ATTENDANCE'                  => '勤怠データが見つかりません。',
   'SUCCESS_REGIST_START_TIME'                 => '出社時間を登録しました。',
   'SUCCESS_REGIST_END_TIME'                   => '退社時間を登録しました。',
   'SUCCESS_REGIST_ATTENDANCE_DATA'            => '勤怠データを更新しました。',
