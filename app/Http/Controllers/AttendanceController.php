@@ -289,6 +289,22 @@ class AttendanceController extends Controller
   }
 
   /**
+   * 勤怠ログ表示アクション
+   */
+  public function approval_history(Request $request)
+  {
+    $flgData = $request->flg_data;
+    // adminは不可
+    if ($flgData['admin_flg']) {
+      return redirect('/index');
+    }
+
+    $viewParams = [];
+
+    return view('attendance.approval_history', $viewParams);
+  }
+
+  /**
    * CSVダウンロードアクション
    */
   public function downloadData(Request $request)

@@ -89,7 +89,7 @@
                         <input type="hidden" name="current_day" value="{{$currentDay}}">
                         <a href="javascript:csv_download.submit()" class="btn btn-primary">CSV出力</a>
                       </form>
-                      <a href="" class="btn btn-primary">勤怠ログ（承認済み）</a>
+                      <a href="{{route('approval_history')}}" class="btn btn-primary">勤怠ログ（承認済み）</a>
                     </div>
                     @endif
 
