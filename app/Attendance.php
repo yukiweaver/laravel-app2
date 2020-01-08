@@ -38,6 +38,7 @@ class Attendance extends Model
       'apply_status',
       'previous_start_time',
       'previous_end_time',
+      'approval_date',
   ];
 
     /**
@@ -95,6 +96,15 @@ class Attendance extends Model
     public static function findApprovalAttendance($userId)
     {
       $attendance = self::where('instructor_id', $userId)->where('apply_status', '1')->orderBy('user_id')->get();
+      return $attendance;
+    }
+
+    /**
+     * 年月をキーにして「承認」の勤怠データを取得
+     */
+    public static function findApprovalData($userId, $date)
+    {
+      $attendance = self::where('user_id', $userId)->where('approval_date', 'LIKE', "$date%")->get();
       return $attendance;
     }
 }

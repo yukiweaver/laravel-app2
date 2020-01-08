@@ -282,6 +282,12 @@ class AttendanceController extends Controller
       if ($val['change'] == 0) {
         continue;
       }
+      // 「承認」の場合のみ、承認日を更新
+      if ($val['apply_status'] == 2) {
+        $params[$key]['approval_date'] = Carbon::today();
+      } else {
+        $params[$key]['approval_date'] = null;
+      }
       Attendance::find($key)->fill($params[$key])->save();
       $i ++;
     }
@@ -299,6 +305,11 @@ class AttendanceController extends Controller
       return redirect('/index');
     }
 
+    $user = auth()->user();
+    $userId = $user->id;
+    $date = Carbon::today()->format('Y-m');
+    $approvalData = Attendance::findApprovalData($userId, $date);
+    // dd($approvalData);
     $viewParams = [];
 
     return view('attendance.approval_history', $viewParams);
