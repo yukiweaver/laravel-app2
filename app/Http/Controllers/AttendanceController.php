@@ -183,6 +183,7 @@ class AttendanceController extends Controller
       $instructorId   = $val['instructor_id'];
       $attendance = Attendance::find($key);
       $previousAttendance = $attendance->getOriginal();
+      // dd($previousAttendance);
       if ($x == 0) {
         $dbParams[] = [
           'id'                  => $key,
@@ -309,8 +310,17 @@ class AttendanceController extends Controller
     $userId = $user->id;
     $date = Carbon::today()->format('Y-m');
     $approvalData = Attendance::findApprovalData($userId, $date);
-    // dd($approvalData);
-    $viewParams = [];
+    // dd($approvalData, $date);
+    foreach ($approvalData as $val) {
+      $val['start_time'] = $val['start_time'] ? Carbon::parse($val['start_time']) : null;
+      $val['end_time'] = $val['end_time'] ? Carbon::parse($val['end_time']) : null;
+      $val['previous_start_time'] = $val['previous_start_time'] ? Carbon::parse($val['previous_start_time']) : null;
+      $val['previous_end_time'] = $val['previous_end_time'] ? Carbon::parse($val['previous_end_time']) : null;
+      $val['attendance_instructor'] = User::find($val['instructor_id'])->name;
+    }
+    $viewParams = [
+      'approvalData' => $approvalData,
+    ];
 
     return view('attendance.approval_history', $viewParams);
   }

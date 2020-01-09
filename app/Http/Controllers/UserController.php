@@ -94,6 +94,7 @@ class UserController extends Controller
     $applyOneMonthAttendance = OneMonthAttendance::findApplyData($userId, $currentDay->format('Y-m'));
     $attendanceCount = Attendance::countAttendance($userId);
     $approvalAttendance = Attendance::findApprovalAttendance($userId);
+    // dd($approvalAttendance);
 
     if (isset($applyOneMonthAttendance)) {
       $applyOneMonthAttendance->instructor = User::find($applyOneMonthAttendance->instructor_id)->name;
@@ -168,8 +169,8 @@ class UserController extends Controller
         $val->attendance_day = Carbon::parse($val->attendance_day);
         $val->start_time = Carbon::parse($val->start_time);
         $val->end_time = Carbon::parse($val->end_time);
-        $val->previous_start_time = Carbon::parse($val->previous_start_time);
-        $val->previous_end_time = Carbon::parse($val->previous_end_time);
+        $val->previous_start_time = $val->previous_start_time ? Carbon::parse($val->previous_start_time) : null;
+        $val->previous_end_time = $val->previous_end_time ? Carbon::parse($val->previous_end_time) : null;
       }
     }
     

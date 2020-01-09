@@ -104,7 +104,9 @@ class Attendance extends Model
      */
     public static function findApprovalData($userId, $date)
     {
-      $attendance = self::where('user_id', $userId)->where('approval_date', 'LIKE', "$date%")->get();
+      $attendance = self::where('user_id', $userId)
+                    ->where('apply_status', '2')
+                    ->where('approval_date', 'LIKE', "$date%")->get();
       return $attendance;
     }
 }

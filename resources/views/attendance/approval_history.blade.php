@@ -74,29 +74,42 @@
                         <th>承認日</th>
                       </tr>
                     </thead>
-                    
+                    @foreach ($approvalData as $val)
                     <tbody>
                       <tr>
                         <!-- 第一項：日付 -->
-                        <td></td>
+                        <td>{{$val->attendance_day}}</td>
                         <!-- 第二項：変更前出社時間 -->
                         <td>
-                          
+                          @if ($val->previous_start_time)
+                          {{$val->previous_start_time->format('H:i')}}
+                          @endif
                         </td>
                         <!-- 第三項：変更前退社時間 -->
                         <td>
-
+                          @if ($val->previous_end_time)
+                          {{$val->previous_end_time->format('H:i')}}
+                          @endif
                         </td>
                         <!-- 第四項：変更後出社時間 -->
-                        <td></td>
+                        <td>
+                          @if ($val->start_time)
+                          {{$val->start_time->format('H:i')}}
+                          @endif
+                        </td>
                         <!-- 第五項：変更後退社時間 -->
-                        <td></td>
+                        <td>
+                          @if ($val->end_time)
+                          {{$val->end_time->format('H:i')}}
+                          @endif
+                        </td>
                         <!-- 第六項：指示者確認 -->
-                        <td></td>
+                        <td>{{$val->attendance_instructor}}</td>
                         <!-- 第七項：承認日 -->
-                        <td></td>
+                        <td>{{$val->approval_date}}</td>
                       </tr>
                     </tbody>
+                    @endforeach
                   </table>
                 </div>
             </div>
