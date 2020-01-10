@@ -44,18 +44,18 @@
                         <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu" role="menu">
-                          <li id=1><a>1</a></li>
-                          <li id=2><a>2</a></li>
-                          <li id=3><a>3</a></li>
-                          <li id=4><a>4</a></li>
-                          <li id=5><a>5</a></li>
-                          <li id=6><a>6</a></li>
-                          <li id=7><a>7</a></li>
-                          <li id=8><a>8</a></li>
-                          <li id=9><a>9</a></li>
-                          <li id=10><a>10</a></li>
-                          <li id=11><a>11</a></li>
-                          <li id=12><a>12</a></li>
+                          <li id="01"><a>1</a></li>
+                          <li id="02"><a>2</a></li>
+                          <li id="03"><a>3</a></li>
+                          <li id="04"><a>4</a></li>
+                          <li id="05"><a>5</a></li>
+                          <li id="06"><a>6</a></li>
+                          <li id="07"><a>7</a></li>
+                          <li id="08"><a>8</a></li>
+                          <li id="09"><a>9</a></li>
+                          <li id="10"><a>10</a></li>
+                          <li id="11"><a>11</a></li>
+                          <li id="12"><a>12</a></li>
                       </ul>
                     </span>
                     <div class="col-xs-2 px-0">
@@ -116,4 +116,23 @@
         </div>
     </div>
 </div>
+<script>
+  $(function() {
+    year = moment().format('YYYY');
+    month = moment().format('MM');
+
+    $('#year li').on('click', function() {
+      year = $(this).attr('id');
+      $.ajax({
+        url: "{{ action('AttendanceController@approval_history') }}",
+        type: 'GET',
+        data: {
+          year: year,
+          month: month
+        },
+        dataType: 'json'
+      })
+    });
+  });
+</script>
 @endsection
