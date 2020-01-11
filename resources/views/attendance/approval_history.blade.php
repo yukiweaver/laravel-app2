@@ -132,6 +132,33 @@
         },
         dataType: 'json'
       })
+      .done(function(data) {
+        $('tbody').find('tr').remove();
+        $('tbody').find('td').remove();
+        $(data).each(function(i, val) {
+          attendanceDay         = val.attendance_day;
+          previousStartTime     = moment(val.previous_start_time).format('HH:mm');
+          previousEndTime       = moment(val.previous_end_time).format('HH:mm');
+          startTime             = moment(val.start_time).format('HH:mm');
+          endTime               = moment(val.end_time).format('HH:mm');
+          attendanceInstructor  = val.attendance_instructor;
+          approvalDate          = val.approval_date;
+          $('tbody').append(
+            $('<tr>')
+            .append('<td>' + attendanceDay + '</td>')
+            .append('<td>' + previousStartTime + '</td>')
+            .append('<td>' + previousEndTime + '</td>')
+            .append('<td>' + startTime + '</td>')
+            .append('<td>' + endTime + '</td>')
+            .append('<td>' + attendanceInstructor + '</td>')
+            .append('<td>' + approvalDate + '</td>')
+            .append('</tr>')
+          )
+        })
+      })
+      .fail(function(data) {
+        alert(data.responseJSON);
+      })
     });
   });
 </script>

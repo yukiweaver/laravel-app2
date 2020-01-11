@@ -306,8 +306,8 @@ class AttendanceController extends Controller
     if ($flgData['admin_flg']) {
       return redirect('/index');
     }
-    Log::debug($request);
-    Log::debug($request->year);
+    // Log::debug($request);
+    // Log::debug($request->year);
 
     $user = auth()->user();
     $userId = $user->id;
@@ -319,6 +319,7 @@ class AttendanceController extends Controller
       $date = Carbon::today()->format('Y-m');
     }
     $approvalData = Attendance::findApprovalData($userId, $date);
+    Log::debug($approvalData);
 
     foreach ($approvalData as $val) {
       $val['start_time'] = $val['start_time'] ? Carbon::parse($val['start_time']) : null;
