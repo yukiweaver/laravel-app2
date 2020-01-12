@@ -205,9 +205,7 @@ class UserController extends Controller
    */
   public function edit()
   {
-    $sessLogin = session()->get('_login');
-    $userId = $sessLogin['user_id'];
-    $user = User::find($userId);
+    $user = auth()->user();
     return view('user.edit', ['user' => $user]);
   }
 
