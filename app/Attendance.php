@@ -49,6 +49,7 @@ class Attendance extends Model
       $oneMonthData = self::where('attendance_day', '>=', $firstDay)
                       ->where('attendance_day', '<=', $lastDay)
                       ->where('user_id', $userId)
+                      ->orderBy('attendance_day', 'asc')
                       ->get();
       return $oneMonthData;
     }
