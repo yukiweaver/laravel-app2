@@ -348,10 +348,12 @@ class AttendanceController extends Controller
       return redirect('/index');
     }
 
+    $user = auth()->user();
+    $userId = $user->id;
     $currentDay = Carbon::parse($request->input('current_day'));
     $firstDay = $currentDay->copy()->firstOfMonth(); // 月初
     $lastDay = $firstDay->copy()->endOfMonth(); // 月末
-    $attendances = Attendance::getOneMonthData($firstDay, $lastDay);
+    $attendances = Attendance::getOneMonthData($firstDay, $lastDay, $userId);
     
     $response = new StreamedResponse (function() use ($request, $attendances) {
 
