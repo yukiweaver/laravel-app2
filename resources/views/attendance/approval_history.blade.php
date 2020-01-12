@@ -33,7 +33,7 @@
                       </ul>
                     </span>
                     <div class="col-xs-2 px-0">
-                      <input type="text" class="form-control" placeholder="xxx" readonly>
+                      <input type="text" id="y" class="form-control" value="" placeholder="{{$today->format('Y')}}" readonly>
                     </div>
                   </div>
 
@@ -59,7 +59,7 @@
                       </ul>
                     </span>
                     <div class="col-xs-2 px-0">
-                      <input type="text" class="form-control" placeholder="yyy" readonly>
+                      <input type="text" id="m" class="form-control" value="" placeholder="{{$today->format('m')}}" readonly>
                     </div>
                   </div>
                   <table class="table table-bordered table-striped table-condensed">
@@ -74,8 +74,8 @@
                         <th>承認日</th>
                       </tr>
                     </thead>
-                    @foreach ($approvalData as $val)
                     <tbody>
+                      @foreach ($approvalData as $val)
                       <tr>
                         <!-- 第一項：日付 -->
                         <td>{{$val->attendance_day}}</td>
@@ -108,8 +108,8 @@
                         <!-- 第七項：承認日 -->
                         <td>{{$val->approval_date}}</td>
                       </tr>
+                      @endforeach
                     </tbody>
-                    @endforeach
                   </table>
                 </div>
             </div>
@@ -123,6 +123,7 @@
 
     $('#year li').on('click', function() {
       year = $(this).attr('id');
+      $("#y").val(year);
       $.ajax({
         url: "{{ action('AttendanceController@approval_history') }}",
         type: 'GET',
@@ -135,14 +136,15 @@
       .done(function(data) {
         $('tbody').find('tr').remove();
         $('tbody').find('td').remove();
-        $(data).each(function(i, val) {
-          attendanceDay         = val.attendance_day;
-          previousStartTime     = moment(val.previous_start_time).format('HH:mm');
-          previousEndTime       = moment(val.previous_end_time).format('HH:mm');
-          startTime             = moment(val.start_time).format('HH:mm');
-          endTime               = moment(val.end_time).format('HH:mm');
-          attendanceInstructor  = val.attendance_instructor;
-          approvalDate          = val.approval_date;
+        Object.keys(data).forEach(function (key) {
+          attendanceDay         = data[key]['attendance_day'];
+          previousStartTime     = data[key]['previous_start_time'] ? moment(data[key]['previous_start_time']).format('HH:mm') : '';
+          previousEndTime       = data[key]['previous_end_time'] ? moment(data[key]['previous_end_time']).format('HH:mm') : '';
+          startTime             = data[key]['start_time'] ? moment(data[key]['start_time']).format('HH:mm') : '';
+          endTime               = data[key]['end_time'] ? moment(data[key]['end_time']).format('HH:mm') : '';
+          attendanceInstructor  = data[key]['attendance_instructor'];
+          approvalDate          = data[key]['approval_date'];
+          
           $('tbody').append(
             $('<tr>')
             .append('<td>' + attendanceDay + '</td>')
@@ -157,7 +159,93 @@
         })
       })
       .fail(function(data) {
-        alert(data.responseJSON);
+        alert('ajax通信に失敗しました。');
+      })
+    });
+
+    $('#month li').on('click', function() {
+      month = $(this).attr('id');
+      $("#m").val(month);
+      $.ajax({
+        url: "{{ action('AttendanceController@approval_history') }}",
+        type: 'GET',
+        data: {
+          year: year,
+          month: month
+        },
+        dataType: 'json'
+      })
+      .done(function(data) {
+        $('tbody').find('tr').remove();
+        $('tbody').find('td').remove();
+        Object.keys(data).forEach(function (key) {
+          attendanceDay         = data[key]['attendance_day'];
+          previousStartTime     = data[key]['previous_start_time'] ? moment(data[key]['previous_start_time']).format('HH:mm') : '';
+          previousEndTime       = data[key]['previous_end_time'] ? moment(data[key]['previous_end_time']).format('HH:mm') : '';
+          startTime             = data[key]['start_time'] ? moment(data[key]['start_time']).format('HH:mm') : '';
+          endTime               = data[key]['end_time'] ? moment(data[key]['end_time']).format('HH:mm') : '';
+          attendanceInstructor  = data[key]['attendance_instructor'];
+          approvalDate          = data[key]['approval_date'];
+          
+          $('tbody').append(
+            $('<tr>')
+            .append('<td>' + attendanceDay + '</td>')
+            .append('<td>' + previousStartTime + '</td>')
+            .append('<td>' + previousEndTime + '</td>')
+            .append('<td>' + startTime + '</td>')
+            .append('<td>' + endTime + '</td>')
+            .append('<td>' + attendanceInstructor + '</td>')
+            .append('<td>' + approvalDate + '</td>')
+            .append('</tr>')
+          )
+        })
+      })
+      .fail(function(data) {
+        alert('ajax通信に失敗しました。');
+      })
+    });
+
+    $('#reset').on('click', function() {
+      $("#y").val('');
+      $("#m").val('');
+      year = moment().format('YYYY');
+      month = moment().format('MM');
+      $.ajax({
+        url: "{{ action('AttendanceController@approval_history') }}",
+        type: 'GET',
+        data: {
+          year: year,
+          month: month
+        },
+        dataType: 'json'
+      })
+      .done(function(data) {
+        $('tbody').find('tr').remove();
+        $('tbody').find('td').remove();
+        Object.keys(data).forEach(function (key) {
+          attendanceDay         = data[key]['attendance_day'];
+          previousStartTime     = data[key]['previous_start_time'] ? moment(data[key]['previous_start_time']).format('HH:mm') : '';
+          previousEndTime       = data[key]['previous_end_time'] ? moment(data[key]['previous_end_time']).format('HH:mm') : '';
+          startTime             = data[key]['start_time'] ? moment(data[key]['start_time']).format('HH:mm') : '';
+          endTime               = data[key]['end_time'] ? moment(data[key]['end_time']).format('HH:mm') : '';
+          attendanceInstructor  = data[key]['attendance_instructor'];
+          approvalDate          = data[key]['approval_date'];
+          
+          $('tbody').append(
+            $('<tr>')
+            .append('<td>' + attendanceDay + '</td>')
+            .append('<td>' + previousStartTime + '</td>')
+            .append('<td>' + previousEndTime + '</td>')
+            .append('<td>' + startTime + '</td>')
+            .append('<td>' + endTime + '</td>')
+            .append('<td>' + attendanceInstructor + '</td>')
+            .append('<td>' + approvalDate + '</td>')
+            .append('</tr>')
+          )
+        })
+      })
+      .fail(function(data) {
+        alert('ajax通信に失敗しました。');
       })
     });
   });
