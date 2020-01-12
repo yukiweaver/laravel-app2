@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\HTTP\Requests\OverworkRequest;
+use App\Http\Requests\OverworkRequest;
 use App\Attendance;
 use App\User;
 use App\Overwork;

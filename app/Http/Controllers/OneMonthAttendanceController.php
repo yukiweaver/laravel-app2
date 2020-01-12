@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\HTTP\Requests\OneMonthAttendanceRequest;
+use App\Http\Requests\OneMonthAttendanceRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\User;
 use App\OneMonthAttendance;
